@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MediIdle - Klinik Vaka ve Anatomi Bulmacası</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --container-bg: #ffffff;
+            --text-color: #333333;
+            --subtitle-color: #7f8c8d;
+            --border-color: #bdc3c7;
+            --th-bg: #f8f9fa;
+            --anamnesis-bg: #e8f4fd;
+            --anamnesis-border: #3498db;
+            --input-bg: #ffffff;
+            --cell-default: #e0e0e0;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0b0e14;         
+            --container-bg: #111622;
+            --text-color: #ffffff;
+            --subtitle-color: #94a3b8;
+            --border-color: #1e293b;
+            --th-bg: #161e31;
+            --anamnesis-bg: #162235;
+            --anamnesis-border: #38bdf8;
+            --input-bg: #0f172a;
+            --cell-default: #1e293b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 700px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            gap: 5px;
+        }
+
+        h1 { margin: 0; font-size: 22px; letter-spacing: 1px; }
+        
+        .header-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .action-header-btn, .theme-toggle, .lang-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: opacity 0.2s;
+        }
+        .action-header-btn:hover, .theme-toggle:hover, .lang-toggle:hover { opacity: 0.8; }
+        .reset-btn { border-color: #e74c3c; color: #e74c3c; }
+        .reset-btn:hover { background: rgba(231, 76, 60, 0.1); }
+
+        .logo-container {
+            width: 100%;
+            max-width: 700px;
+            background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            border: 1px solid #059669;
+            border-radius: 12px;
+            padding: 12px 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2);
+        }
+
+        .logo-icon { font-size: 28px; }
+        .logo-text-group { text-align: left; }
+        .logo-title {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, #34d399, #22d3ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-subtitle { font-size: 12.5px; color: #a7f3d0; margin: 0; letter-spacing: 0.3px; }
+
+        .game-container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 14px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+            transition: background 0.3s, border 0.3s;
+        }
+
+        .anamnesis-box {
+            background: var(--anamnesis-bg);
+            border-left: 6px solid var(--anamnesis-border);
+            padding: 15px 18px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            line-height: 1.6;
+            box-sizing: border-box;
+        }
+        .anamnesis-title {
+            font-weight: bold;
+            color: var(--anamnesis-border);
+            margin-bottom: 6px;
+            font-size: 15.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-group { display: flex; gap: 10px; margin-bottom: 18px; }
+        
+        input {
+            flex: 1;
+            padding: 12px 14px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        input:focus { border-color: #059669; }
+
+        button.guess-btn {
+            padding: 12px 20px;
+            background-color: #059669;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button.guess-btn:hover { background-color: #047857; }
+
+        .table-responsive { width: 100%; margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 11px 8px; text-align: center; border-bottom: 1px solid var(--border-color); font-size: 13.5px; }
+        th { background-color: var(--th-bg); color: var(--subtitle-color); text-transform: uppercase; font-size: 11px; }
+
+        .cell-default { background-color: var(--cell-default); color: var(--text-color); font-weight: bold; transition: background-color 0.4s ease; }
+        .cell-green { background-color: #059669 !important; color: white; font-weight: bold; }
+        .cell-red { background-color: #dc2626 !important; color: white; font-weight: bold; }
+
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr { display: block; width: 100%; box-sizing: border-box; }
+            thead { display: none; }
+            tr {
+                background: var(--th-bg);
+                border: 1px solid var(--border-color);
+                border-radius: 10px;
+                margin-bottom: 12px;
+                padding: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            }
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 9px 12px;
+                margin-bottom: 4px;
+                border-radius: 6px;
+                border-bottom: none;
+                font-size: 14px;
+                text-align: right;
+            }
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                color: var(--subtitle-color);
+                font-size: 12px;
+                text-transform: uppercase;
+                text-align: left;
+            }
+        }
+
+        .rx-section {
+            display: none;
+            margin-top: 20px;
+            border-top: 2px dashed var(--border-color);
+            padding-top: 15px;
+        }
+
+        .rx-title { font-size: 16px; font-weight: bold; color: #38bdf8; margin-bottom: 8px; }
+        .rx-guesses-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .rx-guess-item { background-color: #dc2626; color: white; padding: 10px 14px; border-radius: 8px; font-size: 14.5px; font-weight: bold; text-align: center; box-sizing: border-box; }
+        .rx-success-item { background-color: #059669; color: white; padding: 10px 14px; border-radius: 8px; font-size: 14.5px; font-weight: bold; text-align: center; box-sizing: border-box; }
+
+        .mode-view { display: none; width: 100%; }
+        
+        .media-container {
+            width: 100%;
+            max-height: 420px;
+            background: #000000;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #38bdf8;
+            margin: 12px 0 18px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .media-container img {
+            max-width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .toggle-card-btn {
+            display: none;
+            width: 100%;
+            margin-top: 18px;
+            padding: 14px;
+            background-color: #064e3b;
+            color: #ffffff;
+            border: 2px solid #34d399;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            box-sizing: border-box;
+            transition: background 0.2s;
+        }
+        .toggle-card-btn:hover { background-color: #047857; }
+
+        .result-card {
+            display: none;
+            margin-top: 18px;
+            background-color: #0d2818;
+            border: 2px solid #059669;
+            border-radius: 14px;
+            padding: 22px 18px;
+            text-align: center;
+            color: #ffffff;
+            box-sizing: border-box;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-card h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 30px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin: 0 0 15px 0;
+            color: #34d399;
+        }
+
+        .winner-preview {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .winner-avatar {
+            width: 70px; height: 70px;
+            background: #022c22;
+            border: 2px solid #34d399;
+            border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 36px;
+        }
+
+        .winner-desc { font-size: 14px; color: #a7f3d0; margin: 0; }
+        .winner-title { font-size: 22px; font-weight: bold; margin: 0; color: #ffffff; }
+
+        .stat-text { font-size: 14.5px; margin: 8px 0; font-weight: 500; color: #e2e8f0; }
+        .cyan-text { color: #22d3ee; font-weight: bold; }
+
+        .stats-trigger-btn {
+            background-color: #1e293b;
+            border: 1px solid #38bdf8;
+            color: #ffffff;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 14px 0;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background 0.2s;
+        }
+        .stats-trigger-btn:hover { background-color: #334155; }
+
+        .timer-section { margin-top: 12px; border-top: 1px solid #14532d; padding-top: 14px; }
+        .timer-section p { margin: 0; font-size: 13px; color: #a7f3d0; }
+        .timer-clock { font-size: 26px; font-weight: bold; margin: 6px 0; letter-spacing: 2px; color: #ffffff; }
+        .timezone { font-size: 11px; font-style: italic; color: #94a3b8; }
+
+        .modes-nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 22px 0 12px 0;
+            padding-top: 18px;
+            border-top: 2px solid #14532d;
+        }
+
+        .completion-banner {
+            display: none;
+            background: rgba(5, 150, 105, 0.15);
+            border: 1px solid #34d399;
+            color: #a7f3d0;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            margin: 12px 0;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .mode-icon-badge {
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            position: relative;
+            border: 3px solid #334155;
+            background: #1e293b;
+            color: #64748b;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .mode-icon-badge:hover { transform: scale(1.05); }
+        .mode-icon-badge.active {
+            border-color: #f59e0b; 
+            box-shadow: 0 0 18px rgba(245, 158, 11, 0.6);
+            color: #ffffff;
+        }
+        .mode-icon-badge.completed {
+            border-color: #059669;
+            background: #022c22;
+            color: #34d399;
+        }
+        .mode-icon-badge.locked {
+            opacity: 0.45;
+            cursor: not-allowed;
+            filter: grayscale(100%);
+        }
+        .mode-icon-badge.locked:hover { transform: none; }
+        
+        .mode-icon-badge .check-mark {
+            position: absolute;
+            bottom: -6px; right: -6px;
+            background: #059669;
+            color: white;
+            font-size: 13px;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #111622;
+            font-weight: bold;
+        }
+
+        .action-btns { display: flex; gap: 8px; justify-content: center; margin: 15px 0; }
+        .card-btn {
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+        }
+        .card-btn.share-btn { background-color: #059669; border-color: #34d399; }
+        .card-btn:hover { opacity: 0.85; }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: #111622;
+            border: 1px solid #38bdf8;
+            width: 100%;
+            max-width: 400px;
+            padding: 26px;
+            border-radius: 16px;
+            box-sizing: border-box;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+        .modal-close {
+            position: absolute;
+            top: 14px; right: 16px;
+            background: none; border: none;
+            font-size: 22px; color: #94a3b8; cursor: pointer;
+        }
+        .stats-grid { display: flex; justify-content: space-between; gap: 10px; margin: 20px 0; }
+        .stat-box { background: #161e31; padding: 14px 10px; border-radius: 10px; flex: 1; border: 1px solid #1e293b; }
+        .stat-num { font-size: 24px; font-weight: 800; color: #38bdf8; }
+        .stat-label { font-size: 11px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; font-weight: 600; }
+
+        .confetti-piece {
+            position: fixed; width: 10px; height: 10px; top: -20px; z-index: 9999; opacity: 0.9;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="header-container">
+        <h1>🩺 MediIdle</h1>
+        <div class="header-btns">
+            <button class="action-header-btn reset-btn" id="btnReset" onclick="resetGame()">🔄 Sıfırla</button>
+            <button class="theme-toggle" id="btnTheme" onclick="toggleTheme()">☀️ Tema</button>
+            <button class="lang-toggle" id="btnLang" onclick="toggleLanguage()">🇬🇧 EN</button>
+        </div>
+    </div>
+
+    <div class="logo-container">
+        <div class="logo-icon">🩺</div>
+        <div class="logo-text-group">
+            <div class="logo-title">MediIdle</div>
+            <div class="logo-subtitle" id="txtSub">Günün Klinik Vaka ve Anatomi Bulmacası</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        
+        <!-- 1. MOD: Klinik Vaka ve Anamnez Tahmini -->
+        <div id="caseModeView" class="mode-view" style="display:block;">
+            <div class="anamnesis-box">
+                <div class="anamnesis-title">📋 <span id="txtAnamnesisTitle">Hasta Anamnezi & Öykü</span></div>
+                <div id="anamnesisText"></div>
+            </div>
+            
+            <div class="input-group" id="inputGroupContainer">
+                <input type="text" id="guessInput" placeholder="Tanı yazın (Örn: Akut Apandisit)..." list="diagnosesList">
+                <datalist id="diagnosesList"></datalist>
+                <button class="guess-btn" id="guessBtn" onclick="makeGuess()">Tahmin</button>
+            </div>
+
+            <div class="table-responsive">
+                <table id="resultTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th id="thDiag">Tanı</th>
+                            <th id="thBranch">Branş</th>
+                            <th id="thAge">Yaş Grubu</th>
+                            <th id="thProcess">Süreç</th>
+                            <th id="thSymptom">Ana Semptom</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="rx-section" id="rxSection">
+                <div class="rx-title" id="txtRxTitle">💊 Tedavi / İlaç Seçimi</div>
+                <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 8px;" id="txtRxDesc">Doğru tanıyı buldun! Şimdi bu vaka için ilk tercih tedaviyi seç:</div>
+                
+                <div class="input-group" id="rxInputGroup">
+                    <input type="text" id="rxInput" placeholder="Etken madde veya tedavi yazın..." list="rxList">
+                    <datalist id="rxList"></datalist>
+                    <button class="guess-btn" id="rxBtn" onclick="makeRxGuess()">Tedavi Et</button>
+                </div>
+
+                <div class="rx-guesses-list" id="rxGuessesList"></div>
+            </div>
+
+            <button class="toggle-card-btn" id="toggleCardBtn" onclick="toggleResultCard('resultCard', 'toggleCardBtn')">🏆 Günün Özetini ve Sonucu Göster</button>
+
+            <div id="resultCard" class="result-card">
+                <h1 id="txtVictory1">ZAFER!</h1>
+                <div class="winner-preview">
+                    <div class="winner-avatar">🩺</div>
+                    <p class="winner-desc" id="txtWinSub1">Doğru tahmin ettin.</p>
+                    <h2 class="winner-title" id="modalDiagnosis">Böbrek Taşı</h2>
+                </div>
+                <div class="stat-text"><span id="txtPlayerCountText1">Bugünün vakasını bulan</span> <span class="cyan-text" id="randomPlayerCount">31464</span>. <span id="txtPlayerCountText2">kişisin.</span></div>
+                <div class="stat-text"><span id="txtDiagTriesLabel">Tanı Deneme Sayısı:</span> <span class="cyan-text" id="statDiagTries">1</span></div>
+                <div class="stat-text"><span id="txtRxTriesLabel">Tedavi Deneme Sayısı:</span> <span class="cyan-text" id="statRxTries">1</span></div>
+
+                <button class="stats-trigger-btn" onclick="openStatsModal()" id="txtStatsBtnText">📊 İstatistikler</button>
+
+                <div class="modes-nav-bar" id="modesNavBar1"></div>
+                <div class="completion-banner" id="completionBanner1">🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz.</div>
+
+                <div class="timer-section">
+                    <p id="txtTimerTitle">Şu kadar süre sonra yeni vaka</p>
+                    <div class="timer-clock" id="countdown">02:33:04</div>
+                    <div class="timezone" id="txtTimezone">Saat dilimi: Avrupa (UTC+3, gece yarısı)</div>
+                </div>
+
+                <div class="action-btns" style="margin-top: 15px;">
+                    <button class="card-btn share-btn" id="txtShareBtn1" onclick="shareResults()">📤 Paylaş</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. MOD: Kemik ve Radyoloji/Anatomi Modu -->
+        <div id="boneModeView" class="mode-view">
+            <div style="font-size: 15px; font-weight:bold; color: #38bdf8; margin-bottom: 6px;" id="txtBoneHeader">🦴 Kemik ve Radyoloji Teşhisi</div>
+            <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 12px;" id="txtBoneDesc">Bu röntgen / anatomi görseli hangi kemik veya yapıya aittir? Teşhis et!</div>
+            
+            <div class="media-container">
+                <img id="boneImage" src="" alt="Kemik ve Radyoloji Görseli">
+            </div>
+
+            <div class="input-group" id="boneInputGroup">
+                <input type="text" id="boneGuessInput" placeholder="Kemik adı yazın..." list="boneDiagnosesList">
+                <datalist id="boneDiagnosesList"></datalist>
+                <button class="guess-btn" id="boneGuessBtn" onclick="makeBoneGuess()">Teşhis Et</button>
+            </div>
+
+            <div class="rx-guesses-list" id="boneGuessesList"></div>
+
+            <button class="toggle-card-btn" id="toggleBoneCardBtn" onclick="toggleResultCard('boneResultCard', 'toggleBoneCardBtn')">🏆 Kemik Teşhis Sonucunu Göster</button>
+
+            <div id="boneResultCard" class="result-card">
+                <h1 id="txtVictory2">ZAFER!</h1>
+                <div class="winner-preview">
+                    <div class="winner-avatar">🦴</div>
+                    <p class="winner-desc" id="txtWinSub2">Doğru tahmin ettin.</p>
+                    <h2 class="winner-title" id="modalBoneDiagnosis">El Kemikleri</h2>
+                </div>
+                <div class="stat-text"><span id="txtTriesText2">Deneme sayısı:</span> <span class="cyan-text" id="statBoneTries">1</span></div>
+
+                <button class="stats-trigger-btn" onclick="openStatsModal()" id="txtStatsBtnText2">📊 İstatistikler</button>
+
+                <div class="modes-nav-bar" id="modesNavBar2"></div>
+                <div class="completion-banner" id="completionBanner2">🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz.</div>
+
+                <div class="action-btns" style="margin-top: 15px;">
+                    <button class="card-btn share-btn" id="txtShareBtn2" onclick="shareBoneResults()">📤 Paylaş</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. MOD: Dental / Diş Tomografisi Radyoloji Teşhisi -->
+        <div id="xrayModeView" class="mode-view">
+            <div style="font-size: 15px; font-weight:bold; color: #38bdf8; margin-bottom: 6px;" id="txtXrayHeader">🩻 Dental Tomografi & Diş Radyolojisi Teşhisi</div>
+            <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 12px;" id="txtXrayDesc">Negatoskop önünde incelenen bu diş ve çene 3D tomografi/panoramik kesiti hangi patolojik duruma veya diş yapısına aittir? Teşhis et!</div>
+            
+            <div class="media-container">
+                <img id="xrayImage" src="" alt="Dental Tomografi ve Diş Röntgeni Görüntüsü">
+            </div>
+
+            <div class="input-group" id="xrayInputGroup">
+                <input type="text" id="xrayGuessInput" placeholder="Diş veya patoloji adı yazın..." list="xrayDiagnosesList">
+                <datalist id="xrayDiagnosesList"></datalist>
+                <button class="guess-btn" id="xrayGuessBtn" onclick="makeXrayGuess()">Teşhis Et</button>
+            </div>
+
+            <div class="rx-guesses-list" id="xrayGuessesList"></div>
+
+            <button class="toggle-card-btn" id="toggleXrayCardBtn" onclick="toggleResultCard('xrayResultCard', 'toggleXrayCardBtn')">🏆 Radyoloji Sonucunu Göster</button>
+
+            <div id="xrayResultCard" class="result-card">
+                <h1 id="txtVictory3">ZAFER!</h1>
+                <div class="winner-preview">
+                    <div class="winner-avatar">🩻</div>
+                    <p class="winner-desc" id="txtWinSub3">Doğru tahmin ettin.</p>
+                    <h2 class="winner-title" id="modalXrayDiagnosis">3D Diş Tomografisi</h2>
+                </div>
+                <div class="stat-text"><span id="txtTriesText3">Deneme sayısı:</span> <span class="cyan-text" id="statXrayTries">1</span></div>
+
+                <button class="stats-trigger-btn" onclick="openStatsModal()" id="txtStatsBtnText3">📊 İstatistikler</button>
+
+                <div class="modes-nav-bar" id="modesNavBar3"></div>
+                <div class="completion-banner" id="completionBanner3">🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz.</div>
+
+                <div class="action-btns" style="margin-top: 15px;">
+                    <button class="card-btn share-btn" id="txtShareBtn3" onclick="shareXrayResults()">📤 Paylaş</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- İstatistik Penceresi -->
+    <div class="modal-overlay" id="statsModal" onclick="closeStatsModalOnOutside(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeStatsModal()">×</button>
+            <div id="txtModalTitle" style="font-size: 19px; font-weight: 800; color: #38bdf8; margin-bottom: 6px;">📊 Oyuncu İstatistikleri</div>
+            <div style="font-size: 13px; color: #94a3b8; margin-bottom: 12px;" id="txtModalSubtitle">Genel performans özetiniz</div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-num" id="statPlayed">0</div>
+                    <div class="stat-label" id="txtPlayedLabel">Oynanan</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="statWins">0</div>
+                    <div class="stat-label" id="txtWinsLabel">Galibiyet</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num" id="statStreak">0</div>
+                    <div class="stat-label" id="txtStreakLabel">Seri</div>
+                </div>
+            </div>
+            
+            <button class="guess-btn" style="width:100%; padding:12px; font-size:15px; border-radius:8px;" id="txtModalBtn" onclick="closeStatsModal()">Tamam</button>
+        </div>
+    </div>
+
+    <script>
+        const i18n = {
+            tr: {
+                reset: "🔄 Sıfırla",
+                theme: "☀️ Tema",
+                sub: "Günün Klinik Vaka ve Anatomi Bulmacası",
+                anamnesisTitle: "Hasta Anamnezi & Öykü",
+                guessPlaceholder: "Tanı yazın (Örn: Akut Apandisit)...",
+                guessBtn: "Tahmin",
+                thDiag: "Tanı", thBranch: "Branş", thAge: "Yaş Grubu", thProcess: "Süreç", thSymptom: "Ana Semptom",
+                rxTitle: "💊 Tedavi / İlaç Seçimi",
+                rxDesc: "Doğru tanıyı buldun! Şimdi bu vaka için ilk tercih tedaviyi seç:",
+                rxPlaceholder: "Etken madde veya tedavi yazın...",
+                rxBtn: "Tedavi Et",
+                boneHeader: "🦴 Kemik ve Radyoloji Teşhisi",
+                boneDesc: "Bu röntgen / anatomi görseli hangi kemik veya yapıya aittir? Teşhis et!",
+                bonePlaceholder: "Kemik adı yazın...",
+                boneBtn: "Teşhis Et",
+                xrayHeader: "🩻 Dental Tomografi & Diş Radyolojisi Teşhisi",
+                xrayDesc: "Negatoskop önünde incelenen bu diş ve çene 3D tomografi/panoramik kesiti hangi patolojik duruma veya diş yapısına aittir? Teşhis et!",
+                xrayPlaceholder: "Diş veya patoloji adı yazın...",
+                xrayBtn: "Teşhis Et",
+                victory: "ZAFER!",
+                winSub: "Doğru tahmin ettin.",
+                pCount1: "Bugünün vakasını bulan",
+                pCount2: ". kişisin.",
+                diagTries: "Tanı Deneme Sayısı:",
+                rxTries: "Tedavi Deneme Sayısı:",
+                triesText: "Deneme sayısı:",
+                shareBtn: "📤 Paylaş",
+                statsBtn: "📊 İstatistikler",
+                timerTitle: "Şu kadar süre sonra yeni vaka",
+                timezone: "Saat dilimi: Avrupa (UTC+3, gece yarısı)",
+                modalTitle: "📊 Oyuncu İstatistikleri",
+                modalSubtitle: "Genel performans özetiniz",
+                played: "Oynanan", wins: "Galibiyet", streak: "Seri", modalBtn: "Tamam",
+                toggleShow: "🏆 Günün Özetini ve Sonucu Göster",
+                toggleHide: "🔒 Sonucu Gizle",
+                alertValidDiag: "Lütfen listeden geçerli bir tanı seçin!",
+                alertAlreadyDiag: "Bu tanıyı zaten tahmin ettin!",
+                alertAlreadyRx: "Bu tedaviyi / tahmini zaten denedin!",
+                alertLocked: "Önceki modları tamamlamalısın!",
+                completionText: "🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz."
+            },
+            en: {
+                reset: "🔄 Reset",
+                theme: "☀️ Theme",
+                sub: "Daily Clinical Case & Anatomy Puzzle",
+                anamnesisTitle: "Patient Anamnesis & History",
+                guessPlaceholder: "Type diagnosis (e.g. Acute Appendicitis)...",
+                guessBtn: "Guess",
+                thDiag: "Diagnosis", thBranch: "Branch", thAge: "Age Group", thProcess: "Process", thSymptom: "Main Symptom",
+                rxTitle: "💊 Treatment / Rx Selection",
+                rxDesc: "You found the correct diagnosis! Now select first-choice treatment:",
+                rxPlaceholder: "Type active substance or treatment...",
+                rxBtn: "Treat",
+                boneHeader: "🦴 Bone & Radiology Diagnosis",
+                boneDesc: "What bone or anatomical structure does this image show? Diagnose it!",
+                bonePlaceholder: "Type bone name...",
+                boneBtn: "Diagnose",
+                xrayHeader: "🩻 Dental Tomography & Radiology Diagnosis",
+                xrayDesc: "What dental or pathological condition does this 3D scan/panoramic view show? Diagnose it!",
+                xrayPlaceholder: "Type diagnosis...",
+                xrayBtn: "Diagnose",
+                victory: "VICTORY!",
+                winSub: "You guessed correctly.",
+                pCount1: "You are the",
+                pCount2: "th person to solve today's case.",
+                diagTries: "Diagnosis Attempts:",
+                rxTries: "Treatment Attempts:",
+                triesText: "Attempts:",
+                shareBtn: "📤 Share",
+                statsBtn: "📊 Statistics",
+                timerTitle: "Next case in",
+                timezone: "Timezone: Europe (UTC+3, midnight)",
+                modalTitle: "📊 Player Statistics",
+                modalSubtitle: "Your overall performance summary",
+                played: "Played", wins: "Wins", streak: "Streak", modalBtn: "OK",
+                toggleShow: "🏆 Show Daily Summary & Result",
+                toggleHide: "Hide Result",
+                alertValidDiag: "Please select a valid diagnosis from the list!",
+                alertAlreadyDiag: "You already guessed this diagnosis!",
+                alertAlreadyRx: "You already tried this guess!",
+                alertLocked: "You must complete previous modes first!",
+                completionText: "🎉 You completed all today's puzzles! You've finished the day, see you in the coming days."
+            }
+        };
+
+        const diagnosisMap = {
+            "Akut Apandisit": "Acute Appendicitis",
+            "Akut Gastrit": "Acute Gastritis",
+            "Akut Kolesistit": "Acute Cholecystitis",
+            "Akut Miyokard İnfarktüsü": "Acute Myocardial Infarction",
+            "Akut Tonsillit": "Acute Tonsillitis",
+            "Astım Atağı": "Asthma Attack",
+            "Böbrek Taşı (Nefrolitiazis)": "Kidney Stone (Nephrolithiasis)",
+            "Demir Eksikliği Anemisi": "Iron Deficiency Anemia",
+            "Gastroözofageal Reflü": "Gastroesophageal Reflux",
+            "Hipertansif Kriz": "Hypertensive Crisis",
+            "Hipertiroidi": "Hyperthyroidism",
+            "İdrar Yolu Enfeksiyonu": "Urinary Tract Infection",
+            "Migren": "Migraine",
+            "Pnömoni": "Pneumonia",
+            "Tip 2 Diyabet": "Type 2 Diabetes"
+        };
+
+        const rxMap = {
+            "Cerrahi": "Surgery",
+            "Appendektomi": "Appendectomy",
+            "Pantoprazol": "Pantoprazole",
+            "Omeprazol": "Omeprazole",
+            "Lansoprazol": "Lansoprazole",
+            "Sefotaksim": "Cefotaxime",
+            "Ampisilin-Sulbaktam": "Ampicillin-Sulbaktam",
+            "Aspirin": "Aspirin",
+            "Asetilsalisilik Asit": "Acetylsalicylic Acid",
+            "Amoksisilin": "Amoxicillin",
+            "Penisilin": "Penicillin",
+            "Salbutamol": "Salbutamol",
+            "Deksketoprofen": "Dexketoprofen",
+            "Ibuprofen": "Ibuprofen",
+            "Diclofenac": "Diclofenac",
+            "Demir Sülfat": "Iron Sulfate",
+            "Demir Preparatı": "Iron Supplement",
+            "Ferrum": "Ferrum",
+            "Kaptopril": "Kaptopril",
+            "Metimazol": "Methimazole",
+            "Fosfomisin": "Fosfomycin",
+            "Nitrofurantoin": "Nitrofurantoin",
+            "Sumatriptan": "Sumatriptan",
+            "Levofloksasin": "Levofloxacin",
+            "Azitromisin": "Azithromycin",
+            "Seftriakson": "Ceftriaxone",
+            "Metformin": "Metformin",
+            "Parasetamol": "Paracetamol",
+            "Bol Sıvı": "Fluid Replacement",
+            "İstirahat": "Rest"
+        };
+
+        const databases = {
+            tr: {
+                "Akut Apandisit": { branch: "Genel Cerrahi", ageGroup: "Genç (18-35)", process: "Akut", symptom: "Karın Ağrısı", anamnesis: "24 yaşında erkek hasta, acil servise son 12 saattir göbek çevresinde başlayıp sağ alt kadran lokalizasyonuna yerleşen şiddetli karın ağrısı, bulantı ve iştahsızlık şikayetiyle başvurdu.", rx: ["Cerrahi", "Appendektomi"] },
+                "Akut Gastrit": { branch: "Gastroenteroloji", ageGroup: "Genç (18-35)", process: "Akut", symptom: "Karın Ağrısı", anamnesis: "29 yaşında kadın hasta, yoğun stres ve aşırı baharatlı yemek tüketimi sonrasında epigastrik bölgede yanma, şişkinlik ve ekşime yakınmalarıyla başvuruyor.", rx: ["Pantoprazol", "Omeprazol", "Lansoprazol"] },
+                "Akut Kolesistit": { branch: "Genel Cerrahi", ageGroup: "Yetişkin (36-64)", process: "Akut", symptom: "Karın Ağrısı", anamnesis: "48 yaşında kadın hasta, yağlı bir akşam yemeği sonrasında sağ üst kadranına saplanan, sağ omuz ve kürek kemiğine yayan kolik tarzı ağrı ve bulantı şikayetiyle getirildi.", rx: ["Sefotaksim", "Ampisilin-Sulbaktam"] },
+                "Akut Miyokard İnfarktüsü": { branch: "Kardiyoloji", ageGroup: "Yetişkin (36-64)", process: "Akut", symptom: "Göğüs Ağrısı", anamnesis: "55 yaşında erkek hasta, göğüs merkezinde 'üzerine ağırlık basar gibi' tariflenen, sol kola ve çeneye yayılan ezici tarzda göğüs ağrısı ve soğuk terleme ile acile başvurdu.", rx: ["Aspirin", "Asetilsalisilik Asit"] },
+                "Akut Tonsillit": { branch: "KBB", ageGroup: "Genç (18-35)", process: "Akut", symptom: "Boğaz Ağrısı", anamnesis: "21 yaşında üniversite öğrencisi, yutkunmakla artan şiddetli boğaz ağrısı, ateş ve boyunda hassas şişlikler (lenfadenopati) şikayetleriyle polikliniğe başvurdu.", rx: ["Amoksisilin", "Penisilin"] },
+                "Astım Atağı": { branch: "Göğüs Hastalıkları", ageGroup: "Genç (18-35)", process: "Akut", symptom: "Nefes Darlığı", anamnesis: "26 yaşında kadın hasta, ev temizliği sırasında yoğun toz ve kimyasala maruz kalması ardından ani başlayan nefes darlığı, öksürük ve wheezing (hırıltı) ile başvurdu.", rx: ["Salbutamol"] },
+                "Böbrek Taşı (Nefrolitiazis)": { branch: "Üroloji", ageGroup: "Yetişkin (36-64)", process: "Akut", symptom: "Yan Ağrısı / Flank", anamnesis: "42 yaşında erkek hasta, kıvrandırıcı tarzda sağ yan bölgesinde (flank) başlayan ve kasığa doğru yayılan, durduğu yerde duramayacak kadar şiddetli ağrı şikayetiyle acile getirildi.", rx: ["Deksketoprofen", "Ibuprofen", "Diclofenac"] },
+                "Demir Eksikliği Anemisi": { branch: "Hematoloji", ageGroup: "Yetişkin (36-64)", process: "Kronik", symptom: "Halsizlik / Yorgunluk", anamnesis: "38 yaşında kadın hasta, aylardandır geçmeyen aşırı yorgunluk, saç dökülmesi, tırnaklarda kırılma ve buz yeme isteği (pika) şikayetleriyle hekime başvurdu.", rx: ["Demir Sülfat", "Demir Preparatı", "Ferrum"] },
+                "Gastroözofageal Reflü": { branch: "Gastroenteroloji", ageGroup: "Yetişkin (36-64)", process: "Kronik", symptom: "Göğüste Yanma", anamnesis: "45 yaşında erkek hasta, özellikle akşamları geç saatte yemek yiyip yatağa yattığında göğüs arkasında yanma (heartburn) ve ağzına acı su gelmesi yakınmalarından şikayetçi.", rx: ["Omeprazol", "Pantoprazol"] },
+                "Hipertansif Kriz": { branch: "Kardiyoloji", ageGroup: "Yaşlı (65+)", process: "Akut", symptom: "Baş Ağrısı", anamnesis: "68 yaşında hipertansiyon tanılı hasta, tansiyon ilaçlarını düzensiz kullanımı sonrasında enseden başlayıp yayılan şiddetli zonklayıcı baş ağrısı ve sersemlik hissiyle acile getirildi.", rx: ["Kaptopril"] },
+                "Hipertiroidi": { branch: "Endokrinoloji", ageGroup: "Genç (18-35)", process: "Kronik", symptom: "Çarpıntı / Kilo Kaybı", anamnesis: "28 yaşında kadın hasta, bolca yemek yemesine rağmen hızla kilo kaybetme, ellerde ince titreme (tremor), çarpıntı ve aşırı sinirlilik şikayetleriyle başvurdu.", rx: ["Metimazol"] },
+                "İdrar Yolu Enfeksiyonu": { branch: "Üroloji", ageGroup: "Genç (18-35)", process: "Akut", symptom: "Sık İdrar / Dizüri", anamnesis: "25 yaşında kadın hasta, idrar yaparken son anda kasıkta hissedilen keskin sızı (dizüri), sık idrara çıkma ve tuvaletten sonra hala idrar varmış hissi şikayetleriyle geldi.", rx: ["Fosfomisin", "Nitrofurantoin"] },
+                "Migren": { branch: "Nöroloji", ageGroup: "Yetişkin (36-64)", process: "Kronik", symptom: "Baş Ağrısı", anamnesis: "35 yaşında kadın hasta, genellikle başın tek tarafında localized olan, zonklayıcı karakterde, ışığa ve sese duyarlılığın eşlik ettiği ataklar halinde baş ağrısı çekiyor.", rx: ["Sumatriptan"] },
+                "Pnömoni": { branch: "Dahiliye", ageGroup: "Yaşlı (65+)", process: "Akut", symptom: "Nefes Darlığı", anamnesis: "70 yaşında erkek hasta, yüksek ateş, üşüme-titreme, paslı balgamlı öksürük ve derin nefes alırken batan sağ yan ağrısı şikayetleriyle acile getirildi.", rx: ["Levofloksasin", "Azitromisin", "Seftriakson"] },
+                "Tip 2 Diyabet": { branch: "Endokrinoloji", ageGroup: "Yaşlı (65+)", process: "Kronik", symptom: "Çok Su İçme / Sık İdrar", anamnesis: "60 yaşında erkek hasta, gece tuvalete kalkma sıklığında belirgin artış, sürekli ağız kuruluğu, çok su içme (polidipsi) ve halsizlik yakınmalarıyla başvurdu.", rx: ["Metformin"] }
+            },
+            en: {
+                "Acute Appendicitis": { branch: "General Surgery", ageGroup: "Young (18-35)", process: "Acute", symptom: "Abdominal Pain", anamnesis: "A 24-year-old male presented to the ER with severe abdominal pain starting around the umbilicus and shifting to the right lower quadrant over 12 hours, accompanied by nausea and anorexia.", rx: ["Surgery", "Appendectomy"] },
+                "Acute Gastritis": { branch: "Gastroenterology", ageGroup: "Young (18-35)", process: "Acute", symptom: "Abdominal Pain", anamnesis: "A 29-year-old female presented with epigastric burning, bloating, and discomfort following high stress and heavy spicy food consumption.", rx: ["Pantoprazole", "Omeprazole", "Lansoprazole"] },
+                "Acute Cholecystitis": { branch: "General Surgery", ageGroup: "Adult (36-64)", process: "Acute", symptom: "Abdominal Pain", anamnesis: "A 48-year-old female presented with severe right upper quadrant colicky pain radiating to her right shoulder and scapula following a fatty dinner, accompanied by nausea.", rx: ["Cefotaxime", "Ampicillin-Sulbaktam"] },
+                "Acute Myocardial Infarction": { branch: "Cardiology", ageGroup: "Adult (36-64)", process: "Acute", symptom: "Chest Pain", anamnesis: "A 55-year-old male presented with crushing central chest pain described as heavy weight on chest, radiating to left arm and jaw, accompanied by cold sweat.", rx: ["Aspirin", "Acetylsalicylic Acid"] },
+                "Acute Tonsillitis": { branch: "ENT", ageGroup: "Young (18-35)", process: "Acute", symptom: "Sore Throat", anamnesis: "A 21-year-old university student presented with severe sore throat worsening with swallowing, fever, and tender neck lymph nodes.", rx: ["Amoxicillin", "Penicillin"] },
+                "Asthma Attack": { branch: "Pulmonology", ageGroup: "Young (18-35)", process: "Acute", symptom: "Shortness of Breath", anamnesis: "A 26-year-old female presented with sudden onset shortness of breath, cough, and expiratory wheezing following dust exposure during house cleaning.", rx: ["Salbutamol"] },
+                "Kidney Stone (Nephrolithiasis)": { branch: "Urology", ageGroup: "Adult (36-64)", process: "Acute", symptom: "Flank Pain", anamnesis: "A 42-year-old male presented with excruciating right flank pain radiating to the groin, causing severe restlessness and inability to stay still.", rx: ["Dexketoprofen", "Ibuprofen", "Diclofenac"] },
+                "Iron Deficiency Anemia": { branch: "Hematology", ageGroup: "Adult (36-64)", process: "Chronic", symptom: "Fatigue / Tiredness", anamnesis: "A 38-year-old female presented with chronic severe fatigue, hair loss, brittle nails, and unusual cravings to chew ice over months.", rx: ["Iron Sulfate", "Iron Supplement", "Ferrum"] },
+                "Gastroesophageal Reflux": { branch: "Gastroenterology", ageGroup: "Adult (36-64)", process: "Chronic", symptom: "Heartburn", anamnesis: "A 45-year-old male presented with chronic retrosternal burning (heartburn) and sour regurgitation, especially when lying down late at night.", rx: ["Omeprazole", "Pantoprazole"] },
+                "Hypertensive Crisis": { branch: "Cardiology", ageGroup: "Elderly (65+)", process: "Acute", symptom: "Headache", anamnesis: "A 68-year-old patient with history of hypertension presented with severe occipital throbbing headache and lightheadedness after irregular medication intake.", rx: ["Kaptopril"] },
+                "Hyperthyroidism": { branch: "Endocrinology", ageGroup: "Young (18-35)", process: "Chronic", symptom: "Palpitations / Weight Loss", anamnesis: "A 28-year-old female presented with rapid weight loss despite increased appetite, fine tremors in hands, palpitations, and nervousness.", rx: ["Methimazole"] },
+                "Urinary Tract Infection": { branch: "Urology", ageGroup: "Young (18-35)", process: "Acute", symptom: "Frequent Urination / Dysuria", anamnesis: "A 25-year-old female presented with sharp pain at the end of urination (dysuria), frequency, and sensation of incomplete bladder emptying.", rx: ["Fosfomycin", "Nitrofurantoin"] },
+                "Migraine": { branch: "Neurology", ageGroup: "Adult (36-64)", process: "Chronic", symptom: "Headache", anamnesis: "A 35-year-old female presented with recurrent attacks of unilateral throbbing headache accompanied by photophobia and phonophobia.", rx: ["Sumatriptan"] },
+                "Pneumonia": { branch: "Internal Medicine", ageGroup: "Elderly (65+)", process: "Acute", symptom: "Shortness of Breath", anamnesis: "A 70-year-old male presented with high fever, chills, rust-colored sputum cough, and sharp pleuritic chest pain.", rx: ["Levofloxacin", "Azithromycin", "Ceftriaxone"] },
+                "Type 2 Diabetes": { branch: "Endocrinology", ageGroup: "Elderly (65+)", process: "Chronic", symptom: "Polydipsia / Polyuria", anamnesis: "A 60-year-old male presented with increased nocturia, constant dry mouth, polydipsia, and fatigue over months.", rx: ["Metformin"] }
+            }
+        };
+
+        // Görselleriniz 'images/' klasöründen doğrudan okunacak şekilde entegre edildi:
+        const boneCases = {
+            tr: [
+                { name: "Orta Falanks Kırığı", difficulty: "Orta", url: "images/middle-phalanx-fracture-importance-of-using-two-x-ray-views-in-trauma (1) (7)_2.png" },
+                { name: "Tibia ve Fibula (Alt Ekstremite Grafisi)", difficulty: "Kolay", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
+                { name: "Kalkaneus (Topuk Kemiği Kırığı)", difficulty: "Zor", url: "images/calcaneal-fracture-ankle-x-ray.png" },
+                { name: "Servikal Omurga (C2 Teardrop Kırığı)", difficulty: "Zor", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
+                { name: "Lineer Kafa Kırığı", difficulty: "Orta", url: "images/skull-fracture-linear-1 (1)_4.jpg" },
+                { name: "Subkapital Femur Boyun Kırığı", difficulty: "Zor", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
+                { name: "Talus Osteokondral Lezyonu", difficulty: "Zor", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" }
+            ],
+            en: [
+                { name: "Middle Phalanx Fracture", difficulty: "Medium", url: "images/middle-phalanx-fracture-importance-of-using-two-x-ray-views-in-trauma (1) (7)_2.png" },
+                { name: "Tibia and Fibula (Lower Limb)", difficulty: "Easy", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
+                { name: "Calcaneus (Heel Bone Fracture)", difficulty: "Hard", url: "images/calcaneal-fracture-ankle-x-ray.png" },
+                { name: "Cervical Spine (C2 Teardrop Fracture)", difficulty: "Hard", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
+                { name: "Linear Skull Fracture", difficulty: "Medium", url: "images/skull-fracture-linear-1 (1)_4.jpg" },
+                { name: "Subcapital Femoral Neck Fracture", difficulty: "Hard", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
+                { name: "Talus Osteochondral Lesion", difficulty: "Hard", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" }
+            ]
+        };
+
+        const xrayCases = {
+            tr: [
+                { name: "3D Diş Tomografisi", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }
+            ],
+            en: [
+                { name: "3D Dental Tomography", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }
+            ]
+        };
+
+        let currentLang = localStorage.getItem('mediIdleLang') || 'tr';
+        let isAnimating = false;
+        let activeModeId = 1;
+
+        function getActiveDatabase() { return databases[currentLang]; }
+
+        function getDailyIndex(listLength) {
+            const startDate = new Date("2026-01-01").getTime();
+            const todayTime = new Date().setHours(0,0,0,0);
+            const diffDays = Math.floor((todayTime - startDate) / (1000 * 60 * 60 * 24));
+            return Math.abs(diffDays) % listLength;
+        }
+
+        function getDailyPatient() {
+            const db = getActiveDatabase();
+            const keys = Object.keys(db);
+            const index = getDailyIndex(keys.length);
+            const chosenDiagnosis = keys[index];
+            return {
+                diagnosis: chosenDiagnosis,
+                branch: db[chosenDiagnosis].branch,
+                ageGroup: db[chosenDiagnosis].ageGroup,
+                process: db[chosenDiagnosis].process,
+                symptom: db[chosenDiagnosis].symptom,
+                anamnesis: db[chosenDiagnosis].anamnesis,
+                rx: db[chosenDiagnosis].rx,
+                dayIndex: index
+            };
+        }
+
+        function getDailyBoneCase() {
+            const list = boneCases[currentLang];
+            return list[getDailyIndex(list.length)];
+        }
+
+        function getDailyXrayCase() {
+            const list = xrayCases[currentLang];
+            return list[getDailyIndex(list.length)];
+        }
+
+        let dailyPatient = getDailyPatient();
+        let dailyBoneCase = getDailyBoneCase();
+        let dailyXrayCase = getDailyXrayCase();
+
+        function switchMode(targetMode) {
+            const caseWon = localStorage.getItem('mediIdleRxWon') === 'true';
+            const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+
+            if (targetMode === 2 && !caseWon) {
+                alert(i18n[currentLang].alertLocked);
+                return;
+            }
+            if (targetMode === 3 && (!caseWon || !boneWon)) {
+                alert(i18n[currentLang].alertLocked);
+                return;
+            }
+
+            activeModeId = targetMode;
+            document.querySelectorAll('.mode-view').forEach(el => el.style.display = 'none');
+            
+            if(targetMode === 1) document.getElementById('caseModeView').style.display = 'block';
+            if(targetMode === 2) document.getElementById('boneModeView').style.display = 'block';
+            if(targetMode === 3) document.getElementById('xrayModeView').style.display = 'block';
+
+            renderModesNavBars();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderModesNavBars() {
+            const caseWon = localStorage.getItem('mediIdleRxWon') === 'true';
+            const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+            const xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
+            const allCompleted = caseWon && boneWon && xrayWon;
+
+            const navBars = ['modesNavBar1', 'modesNavBar2', 'modesNavBar3'];
+            const banners = ['completionBanner1', 'completionBanner2', 'completionBanner3'];
+
+            navBars.forEach((barId, idx) => {
+                const bar = document.getElementById(barId);
+                const banner = document.getElementById(banners[idx]);
+                if (!bar) return;
+
+                const isBoneLocked = !caseWon;
+                const isXrayLocked = !caseWon || !boneWon;
+
+                bar.innerHTML = `
+                    <div class="mode-icon-badge ${activeModeId===1?'active':''} ${caseWon?'completed':''}" onclick="switchMode(1)">
+                        🩺 ${caseWon ? '<div class="check-mark">✓</div>' : ''}
+                    </div>
+                    <div class="mode-icon-badge ${activeModeId===2?'active':''} ${boneWon?'completed':''} ${isBoneLocked?'locked':''}" onclick="switchMode(2)">
+                        🦴 ${boneWon ? '<div class="check-mark">✓</div>' : ''}
+                    </div>
+                    <div class="mode-icon-badge ${activeModeId===3?'active':''} ${xrayWon?'completed':''} ${isXrayLocked?'locked':''}" onclick="switchMode(3)">
+                        🩻 ${xrayWon ? '<div class="check-mark">✓</div>' : ''}
+                    </div>
+                `;
+
+                if (banner) {
+                    if (allCompleted) {
+                        banner.innerText = i18n[currentLang].completionText;
+                        banner.style.display = 'block';
+                    } else {
+                        banner.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        function toggleLanguage() {
+            if (isAnimating) return;
+            currentLang = currentLang === 'tr' ? 'en' : 'tr';
+            localStorage.setItem('mediIdleLang', currentLang);
+            
+            const savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys')) || [];
+            let savedRx = JSON.parse(localStorage.getItem('mediIdleRxGuesses')) || [];
+
+            savedRx = savedRx.map(rx => {
+                if (currentLang === 'en' && rxMap[rx]) return rxMap[rx];
+                if (currentLang === 'tr') {
+                    for (let trRx in rxMap) {
+                        if (rxMap[trRx] === rx) return trRx;
+                    }
+                }
+                return rx;
+            });
+            localStorage.setItem('mediIdleRxGuesses', JSON.stringify(savedRx));
+            rxGuessesHistory = savedRx;
+
+            const oldBoneIndex = boneCases[currentLang === 'tr' ? 'en' : 'tr'].findIndex(b => b.name === (dailyBoneCase ? dailyBoneCase.name : ""));
+            const oldXrayName = dailyXrayCase ? dailyXrayCase.name : "";
+
+            dailyPatient = getDailyPatient();
+            dailyBoneCase = getDailyBoneCase();
+            dailyXrayCase = getDailyXrayCase();
+
+            if (oldBoneIndex !== -1 && boneCases[currentLang][oldBoneIndex]) {
+                dailyBoneCase = boneCases[currentLang][oldBoneIndex];
+            }
+            if (oldXrayName) {
+                const xrayIndex = xrayCases[currentLang === 'tr' ? 'en' : 'tr'].findIndex(x => x.name === oldXrayName);
+                if (xrayIndex !== -1 && xrayCases[currentLang][xrayIndex]) {
+                    dailyXrayCase = xrayCases[currentLang][xrayIndex];
+                }
+            }
+
+            document.getElementById('anamnesisText').innerText = dailyPatient.anamnesis;
+            document.getElementById('boneImage').src = dailyBoneCase.url;
+            document.getElementById('xrayImage').src = dailyXrayCase.url;
+
+            updateLanguageUI();
+            updateDatalist();
+            updateRxList();
+            updateBoneDatalist();
+            updateXrayDatalist();
+            renderModesNavBars();
+            
+            document.getElementById('tableBody').innerHTML = '';
+            if(savedKeys.length > 0) {
+                savedKeys.forEach((key) => {
+                    let targetKey = key;
+                    if (currentLang === 'en' && diagnosisMap[key]) targetKey = diagnosisMap[key];
+                    if (currentLang === 'tr') {
+                        for (let trKey in diagnosisMap) {
+                            if (diagnosisMap[trKey] === key) { targetKey = trKey; break; }
+                        }
+                    }
+                    renderStaticRow(targetKey);
+                });
+            }
+
+            const rxWon = localStorage.getItem('mediIdleRxWon') === 'true';
+            const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+            const xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
+
+            const currentKeys = Object.keys(getActiveDatabase());
+            if (savedKeys.includes(currentKeys[getDailyIndex(currentKeys.length)])) {
+                document.getElementById('inputGroupContainer').style.display = 'none';
+                document.getElementById('rxSection').style.display = 'block';
+            }
+            if (rxWon) {
+                document.getElementById('rxInputGroup').style.display = 'none';
+                document.getElementById('toggleCardBtn').style.display = 'block';
+                document.getElementById('toggleCardBtn').innerText = document.getElementById('resultCard').style.display === 'block' ? i18n[currentLang].toggleHide : i18n[currentLang].toggleShow;
+            }
+            if (boneWon) {
+                document.getElementById('boneInputGroup').style.display = 'none';
+                document.getElementById('toggleBoneCardBtn').style.display = 'block';
+                document.getElementById('toggleBoneCardBtn').innerText = document.getElementById('boneResultCard').style.display === 'block' ? i18n[currentLang].toggleHide : i18n[currentLang].toggleShow;
+            }
+            if (xrayWon) {
+                document.getElementById('xrayInputGroup').style.display = 'none';
+                document.getElementById('toggleXrayCardBtn').style.display = 'block';
+                document.getElementById('toggleXrayCardBtn').innerText = document.getElementById('xrayResultCard').style.display === 'block' ? i18n[currentLang].toggleHide : i18n[currentLang].toggleShow;
+            }
+
+            document.getElementById('rxGuessesList').innerHTML = '';
+            rxGuessesHistory.forEach(rxG => { renderRxGuessItem(rxG, isCorrectRx(rxG), 'rxGuessesList'); });
+
+            document.getElementById('boneGuessesList').innerHTML = '';
+            const savedBone = JSON.parse(localStorage.getItem('mediIdleBoneGuesses')) || [];
+            savedBone.forEach(b => { renderRxGuessItem(b, b.toLowerCase() === dailyBoneCase.name.toLowerCase(), 'boneGuessesList'); });
+
+            document.getElementById('xrayGuessesList').innerHTML = '';
+            const savedXray = JSON.parse(localStorage.getItem('mediIdleXrayGuesses')) || [];
+            savedXray.forEach(x => { renderRxGuessItem(x, x.toLowerCase() === dailyXrayCase.name.toLowerCase(), 'xrayGuessesList'); });
+        }
+
+        function updateLanguageUI() {
+            const t = i18n[currentLang];
+            document.getElementById('btnReset').innerText = t.reset;
+            document.getElementById('btnTheme').innerText = t.theme;
+            document.getElementById('btnLang').innerText = currentLang === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR';
+            document.getElementById('txtSub').innerText = t.sub;
+            
+            document.getElementById('txtAnamnesisTitle').innerText = t.anamnesisTitle;
+            document.getElementById('guessInput').placeholder = t.guessPlaceholder;
+            document.getElementById('guessBtn').innerText = t.guessBtn;
+
+            document.getElementById('thDiag').innerText = t.thDiag;
+            document.getElementById('thBranch').innerText = t.thBranch;
+            document.getElementById('thAge').innerText = t.thAge;
+            document.getElementById('thProcess').innerText = t.thProcess;
+            document.getElementById('thSymptom').innerText = t.thSymptom;
+
+            document.getElementById('txtRxTitle').innerText = t.rxTitle;
+            document.getElementById('txtRxDesc').innerText = t.rxDesc;
+            document.getElementById('rxInput').placeholder = t.rxPlaceholder;
+            document.getElementById('rxBtn').innerText = t.rxBtn;
+
+            document.getElementById('txtBoneHeader').innerText = t.boneHeader;
+            document.getElementById('txtBoneDesc').innerText = t.boneDesc;
+            document.getElementById('boneGuessInput').placeholder = t.bonePlaceholder;
+            document.getElementById('boneGuessBtn').innerText = t.boneBtn;
+
+            document.getElementById('txtXrayHeader').innerText = t.xrayHeader;
+            document.getElementById('txtXrayDesc').innerText = t.xrayDesc;
+            document.getElementById('xrayGuessInput').placeholder = t.xrayPlaceholder;
+            document.getElementById('xrayGuessBtn').innerText = t.xrayBtn;
+
+            document.getElementById('txtVictory1').innerText = t.victory;
+            document.getElementById('txtVictory2').innerText = t.victory;
+            document.getElementById('txtVictory3').innerText = t.victory;
+            document.getElementById('txtWinSub1').innerText = t.winSub;
+            document.getElementById('txtWinSub2').innerText = t.winSub;
+            document.getElementById('txtWinSub3').innerText = t.winSub;
+            document.getElementById('txtPlayerCountText1').innerText = t.pCount1;
+            document.getElementById('txtPlayerCountText2').innerText = t.pCount2;
+            document.getElementById('txtDiagTriesLabel').innerText = t.diagTries;
+            document.getElementById('txtRxTriesLabel').innerText = t.rxTries;
+            document.getElementById('txtTriesText2').innerText = t.triesText;
+            document.getElementById('txtTriesText3').innerText = t.triesText;
+
+            document.getElementById('txtStatsBtnText').innerText = t.statsBtn;
+            document.getElementById('txtStatsBtnText2').innerText = t.statsBtn;
+            document.getElementById('txtStatsBtnText3').innerText = t.statsBtn;
+            document.getElementById('txtTimerTitle').innerText = t.timerTitle;
+            document.getElementById('txtTimezone').innerText = t.timezone;
+            document.getElementById('txtShareBtn1').innerText = t.shareBtn;
+            document.getElementById('txtShareBtn2').innerText = t.shareBtn;
+            document.getElementById('txtShareBtn3').innerText = t.shareBtn;
+
+            document.getElementById('txtModalTitle').innerText = t.modalTitle;
+            document.getElementById('txtModalSubtitle').innerText = t.modalSubtitle;
+            document.getElementById('txtPlayedLabel').innerText = t.played;
+            document.getElementById('txtWinsLabel').innerText = t.wins;
+            document.getElementById('txtStreakLabel').innerText = t.streak;
+            document.getElementById('txtModalBtn').innerText = t.modalBtn;
+
+            document.getElementById('modalDiagnosis').innerText = dailyPatient.diagnosis.split(" (")[0];
+            document.getElementById('modalBoneDiagnosis').innerText = dailyBoneCase.name.split(" (")[0];
+            document.getElementById('modalXrayDiagnosis').innerText = dailyXrayCase.name.split(" (")[0];
+        }
+
+        const lastPlayedDate = localStorage.getItem('mediIdleDate');
+        const currentDate = new Date().toISOString().slice(0, 10);
+        if (lastPlayedDate !== currentDate) {
+            localStorage.setItem('mediIdleDate', currentDate);
+            localStorage.removeItem('mediIdleGuessKeys');
+            localStorage.removeItem('mediIdleRxGuesses');
+            localStorage.removeItem('mediIdleBoneGuesses');
+            localStorage.removeItem('mediIdleXrayGuesses');
+            localStorage.removeItem('mediIdleWonToday');
+            localStorage.removeItem('mediIdleRxWon');
+            localStorage.removeItem('mediIdleBoneWon');
+            localStorage.removeItem('mediIdleXrayWon');
+            localStorage.removeItem('mediIdlePlayerNumber');
+        }
+
+        let rxGuessesHistory = JSON.parse(localStorage.getItem('mediIdleRxGuesses')) || [];
+        let boneGuessesHistory = JSON.parse(localStorage.getItem('mediIdleBoneGuesses')) || [];
+        let xrayGuessesHistory = JSON.parse(localStorage.getItem('mediIdleXrayGuesses')) || [];
+        let userStats = JSON.parse(localStorage.getItem('mediIdleStats')) || { played: 0, wins: 0, streak: 0 };
+        let rxWon = localStorage.getItem('mediIdleRxWon') === 'true';
+        let boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+        let xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
+
+        window.onload = function() {
+            document.getElementById('anamnesisText').innerText = dailyPatient.anamnesis;
+            document.getElementById('boneImage').src = dailyBoneCase.url;
+            document.getElementById('xrayImage').src = dailyXrayCase.url;
+
+            updateLanguageUI();
+            updateDatalist();
+            updateRxList();
+            updateBoneDatalist();
+            updateXrayDatalist();
+            renderModesNavBars();
+
+            const savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys'));
+            if (savedKeys && savedKeys.length > 0) {
+                const currentKeys = Object.keys(getActiveDatabase());
+                savedKeys.forEach((key) => {
+                    let targetKey = key;
+                    if (currentLang === 'en' && diagnosisMap[key]) targetKey = diagnosisMap[key];
+                    if (currentLang === 'tr') {
+                        for (let trKey in diagnosisMap) {
+                            if (diagnosisMap[trKey] === key) { targetKey = trKey; break; }
+                        }
+                    }
+                    renderStaticRow(targetKey);
+                });
+
+                if (savedKeys.includes(currentKeys[getDailyIndex(currentKeys.length)])) {
+                    document.getElementById('inputGroupContainer').style.display = 'none';
+                    document.getElementById('rxSection').style.display = 'block';
+                    rxGuessesHistory.forEach(rxG => { renderRxGuessItem(rxG, isCorrectRx(rxG), 'rxGuessesList'); });
+                    if (rxWon) {
+                        document.getElementById('rxInputGroup').style.display = 'none';
+                        document.getElementById('toggleCardBtn').style.display = 'block';
+                        setupResultCard(savedKeys.length, rxGuessesHistory.length);
+                    }
+                }
+            }
+
+            if (boneWon) {
+                document.getElementById('boneInputGroup').style.display = 'none';
+                document.getElementById('toggleBoneCardBtn').style.display = 'block';
+                boneGuessesHistory.forEach(b => { renderRxGuessItem(b, true, 'boneGuessesList'); });
+                document.getElementById('statBoneTries').innerText = boneGuessesHistory.length;
+            }
+
+            if (xrayWon) {
+                document.getElementById('xrayInputGroup').style.display = 'none';
+                document.getElementById('toggleXrayCardBtn').style.display = 'block';
+                xrayGuessesHistory.forEach(x => { renderRxGuessItem(x, true, 'xrayGuessesList'); });
+                document.getElementById('statXrayTries').innerText = xrayGuessesHistory.length;
+            }
+        };
+
+        function updateDatalist() {
+            const db = getActiveDatabase();
+            const diagnosisKeys = Object.keys(db).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
+            const savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys')) || [];
+            const dataList = document.getElementById('diagnosesList');
+            dataList.innerHTML = '';
+            diagnosisKeys.forEach((diag) => {
+                let mappedDiag = diag;
+                if (currentLang === 'en' && diagnosisMap[diag]) mappedDiag = diagnosisMap[diag];
+                if (!savedKeys.includes(diag) && !savedKeys.includes(mappedDiag)) {
+                    const opt = document.createElement('option');
+                    opt.value = diag;
+                    dataList.appendChild(opt);
+                }
+            });
+        }
+
+        function updateBoneDatalist() {
+            const dataList = document.getElementById('boneDiagnosesList');
+            dataList.innerHTML = '';
+            const allBones = boneCases[currentLang].map(b => b.name).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
+            allBones.forEach(b => {
+                if (!boneGuessesHistory.includes(b)) {
+                    const opt = document.createElement('option');
+                    opt.value = b;
+                    dataList.appendChild(opt);
+                }
+            });
+        }
+
+        function updateXrayDatalist() {
+            const dataList = document.getElementById('xrayDiagnosesList');
+            dataList.innerHTML = '';
+            const allXrays = xrayCases[currentLang].map(x => x.name).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
+            allXrays.forEach(diag => {
+                if (!xrayGuessesHistory.includes(diag)) {
+                    const opt = document.createElement('option');
+                    opt.value = diag;
+                    dataList.appendChild(opt);
+                }
+            });
+        }
+
+        function updateRxList() {
+            const db = getActiveDatabase();
+            let allRxOptions = [];
+            Object.values(db).forEach(item => { allRxOptions.push(...item.rx); });
+            const extra = currentLang === 'tr' ? ["Parasetamol", "İbuprofen", "Bol Sıvı", "İstirahat", "Demir Sülfat", "Ferrum"] : ["Paracetamol", "Ibuprofen", "Fluid Replacement", "Rest", "Iron Sulfate", "Ferrum"];
+            const fullPool = Array.from(new Set([...allRxOptions, ...extra])).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
+            
+            const rxList = document.getElementById('rxList');
+            rxList.innerHTML = '';
+            fullPool.forEach(med => {
+                if (!rxGuessesHistory.includes(med)) {
+                    const opt = document.createElement('option');
+                    opt.value = med;
+                    rxList.appendChild(opt);
+                }
+            });
+        }
+
+        function isCorrectRx(userAnswer) {
+            const cleanUser = userAnswer.trim().toLowerCase();
+            return dailyPatient.rx.some(ans => ans.toLowerCase() === cleanUser);
+        }
+
+        function makeRxGuess() {
+            const inputField = document.getElementById('rxInput');
+            const userRx = inputField.value.trim();
+            if (!userRx) return;
+            if (rxGuessesHistory.includes(userRx)) { alert(i18n[currentLang].alertAlreadyRx); inputField.value = ""; return; }
+
+            rxGuessesHistory.push(userRx);
+            localStorage.setItem('mediIdleRxGuesses', JSON.stringify(rxGuessesHistory));
+            const savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys')) || [];
+
+            if (isCorrectRx(userRx)) {
+                rxWon = true;
+                localStorage.setItem('mediIdleRxWon', 'true');
+                renderRxGuessItem(userRx, true, 'rxGuessesList');
+                document.getElementById('rxInputGroup').style.display = 'none';
+                document.getElementById('toggleCardBtn').style.display = 'block';
+                setupResultCard(savedKeys.length, rxGuessesHistory.length);
+                toggleResultCard('resultCard', 'toggleCardBtn');
+                renderModesNavBars();
+                triggerConfetti();
+            } else {
+                renderRxGuessItem(userRx, false, 'rxGuessesList');
+                updateRxList();
+            }
+            inputField.value = "";
+        }
+
+        function makeBoneGuess() {
+            const inputField = document.getElementById('boneGuessInput');
+            const userBone = inputField.value.trim();
+            if (!userBone) return;
+            if (boneGuessesHistory.includes(userBone)) { alert(i18n[currentLang].alertAlreadyRx); inputField.value = ""; return; }
+
+            boneGuessesHistory.push(userBone);
+            localStorage.setItem('mediIdleBoneGuesses', JSON.stringify(boneGuessesHistory));
+
+            const isCorrect = (userBone.toLowerCase() === dailyBoneCase.name.toLowerCase());
+            if (isCorrect) {
+                boneWon = true;
+                localStorage.setItem('mediIdleBoneWon', 'true');
+                renderRxGuessItem(userBone, true, 'boneGuessesList');
+                document.getElementById('boneInputGroup').style.display = 'none';
+                document.getElementById('toggleBoneCardBtn').style.display = 'block';
+                document.getElementById('statBoneTries').innerText = boneGuessesHistory.length;
+                document.getElementById('boneResultCard').style.display = 'block';
+                document.getElementById('toggleBoneCardBtn').innerText = i18n[currentLang].toggleHide;
+                document.getElementById('boneResultCard').scrollIntoView({ behavior: 'smooth' });
+                renderModesNavBars();
+                triggerConfetti();
+            } else {
+                renderRxGuessItem(userBone, false, 'boneGuessesList');
+                updateBoneDatalist();
+            }
+            inputField.value = "";
+        }
+
+        function makeXrayGuess() {
+            const inputField = document.getElementById('xrayGuessInput');
+            const userXray = inputField.value.trim();
+            if (!userXray) return;
+            if (xrayGuessesHistory.includes(userXray)) { alert(i18n[currentLang].alertAlreadyRx); inputField.value = ""; return; }
+
+            xrayGuessesHistory.push(userXray);
+            localStorage.setItem('mediIdleXrayGuesses', JSON.stringify(xrayGuessesHistory));
+
+            const isCorrect = (userXray.toLowerCase() === dailyXrayCase.name.toLowerCase());
+            if (isCorrect) {
+                xrayWon = true;
+                localStorage.setItem('mediIdleXrayWon', 'true');
+                renderRxGuessItem(userXray, true, 'xrayGuessesList');
+                document.getElementById('xrayInputGroup').style.display = 'none';
+                document.getElementById('toggleXrayCardBtn').style.display = 'block';
+                document.getElementById('statXrayTries').innerText = xrayGuessesHistory.length;
+                document.getElementById('xrayResultCard').style.display = 'block';
+                document.getElementById('toggleXrayCardBtn').innerText = i18n[currentLang].toggleHide;
+                document.getElementById('xrayResultCard').scrollIntoView({ behavior: 'smooth' });
+                renderModesNavBars();
+                triggerConfetti();
+            } else {
+                renderRxGuessItem(userXray, false, 'xrayGuessesList');
+                updateXrayDatalist();
+            }
+            inputField.value = "";
+        }
+
+        function renderRxGuessItem(text, isSuccess, containerId) {
+            const listContainer = document.getElementById(containerId);
+            const item = document.createElement('div');
+            item.className = isSuccess ? 'rx-success-item' : 'rx-guess-item';
+            item.innerText = isSuccess ? `✅ ${text}` : `❌ ${text}`;
+            listContainer.appendChild(item);
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        function resetGame() {
+            if (confirm(currentLang === 'tr' ? "Oyun ilerlemesini sıfırlamak istediğine emin misin?" : "Are you sure you want to reset game progress?")) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function openStatsModal() {
+            const stats = JSON.parse(localStorage.getItem('mediIdleStats')) || { played: 0, wins: 0, streak: 0 };
+            document.getElementById('statPlayed').innerText = stats.played;
+            document.getElementById('statWins').innerText = stats.wins;
+            document.getElementById('statStreak').innerText = stats.streak;
+            document.getElementById('statsModal').style.display = 'flex';
+        }
+
+        function closeStatsModal() { document.getElementById('statsModal').style.display = 'none'; }
+        function closeStatsModalOnOutside(e) { if (e.target === document.getElementById('statsModal')) closeStatsModal(); }
+
+        function toggleResultCard(cardId, btnId) {
+            const card = document.getElementById(cardId);
+            const btn = document.getElementById(btnId);
+            const t = i18n[currentLang];
+            if (card.style.display === 'block') { card.style.display = 'none'; btn.innerText = t.toggleShow; }
+            else { card.style.display = 'block'; btn.innerText = t.toggleHide; card.scrollIntoView({ behavior: 'smooth' }); }
+        }
+
+        function makeGuess() {
+            const db = getActiveDatabase();
+            const diagnosisKeys = Object.keys(db);
+            const inputField = document.getElementById('guessInput');
+            const userGuess = inputField.value.trim();
+
+            const guessIdx = diagnosisKeys.indexOf(userGuess);
+            if (guessIdx === -1) { alert(i18n[currentLang].alertValidDiag); return; }
+
+            let savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys')) || [];
+            if (savedKeys.includes(userGuess)) { alert(i18n[currentLang].alertAlreadyDiag); inputField.value = ""; return; }
+
+            savedKeys.push(userGuess);
+            localStorage.setItem('mediIdleGuessKeys', JSON.stringify(savedKeys));
+            renderRow(userGuess, true);
+            inputField.value = "";
+        }
+
+        function triggerConfetti() {
+            const colors = ['#059669', '#38bdf8', '#dc2626', '#f59e0b', '#8b5cf6', '#22d3ee'];
+            for (let i = 0; i < 70; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = (Math.random() * 8 + 6) + 'px';
+                confetti.style.height = (Math.random() * 12 + 8) + 'px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                const duration = Math.random() * 2 + 1.5;
+                confetti.style.animationDuration = duration + 's';
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => { confetti.remove(); }, duration * 1000);
+            }
+        }
+
+        function renderStaticRow(userGuess) {
+            const db = getActiveDatabase();
+            document.getElementById('resultTable').style.display = 'table';
+            const guessData = db[userGuess];
+            if (!guessData) return;
+            const tableBody = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+            
+            const fields = ['diagnosis', 'branch', 'ageGroup', 'process', 'symptom'];
+            const targets = { diagnosis: dailyPatient.diagnosis, branch: dailyPatient.branch, ageGroup: dailyPatient.ageGroup, process: dailyPatient.process, symptom: dailyPatient.symptom };
+            const labels = currentLang === 'tr' ? { diagnosis: "Tanı", branch: "Branş", ageGroup: "Yaş Grubu", process: "Süreç", symptom: "Ana Semptom" } : { diagnosis: "Diagnosis", branch: "Branch", ageGroup: "Age Group", process: "Process", symptom: "Main Symptom" };
+
+            fields.forEach(field => {
+                const td = document.createElement('td');
+                let val = (field === 'diagnosis') ? userGuess : guessData[field];
+                td.innerText = val;
+                td.setAttribute('data-label', labels[field]);
+                td.className = (val === targets[field]) ? 'cell-green' : 'cell-red';
+                row.appendChild(td);
+            });
+            tableBody.appendChild(row);
+        }
+
+        function renderRow(userGuess, animate) {
+            const db = getActiveDatabase();
+            document.getElementById('resultTable').style.display = 'table';
+            if (animate) updateDatalist();
+
+            const guessData = db[userGuess];
+            const tableBody = document.getElementById('tableBody');
+            const row = document.createElement('tr');
+            
+            const fields = ['diagnosis', 'branch', 'ageGroup', 'process', 'symptom'];
+            const targets = { diagnosis: dailyPatient.diagnosis, branch: dailyPatient.branch, ageGroup: dailyPatient.ageGroup, process: dailyPatient.process, symptom: dailyPatient.symptom };
+            const labels = currentLang === 'tr' ? { diagnosis: "Tanı", branch: "Branş", ageGroup: "Yaş Grubu", process: "Süreç", symptom: "Ana Semptom" } : { diagnosis: "Diagnosis", branch: "Branch", ageGroup: "Age Group", process: "Process", symptom: "Main Symptom" };
+
+            let cellElements = [];
+            fields.forEach(field => {
+                const td = document.createElement('td');
+                let val = (field === 'diagnosis') ? userGuess : guessData[field];
+                td.innerText = val;
+                td.setAttribute('data-label', labels[field]);
+                td.className = animate ? 'cell-default' : (val === targets[field] ? 'cell-green' : 'cell-red'); 
+                row.appendChild(td);
+                cellElements.push({ td: td, val: val, target: targets[field] });
+            });
+
+            tableBody.prepend(row);
+            row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            if (animate) {
+                isAnimating = true;
+                let currentIndex = 0;
+                const interval = setInterval(() => {
+                    if (currentIndex < cellElements.length) {
+                        const item = cellElements[currentIndex];
+                        item.td.classList.remove('cell-default');
+                        item.td.classList.add(item.val === item.target ? 'cell-green' : 'cell-red');
+                        currentIndex++;
+                    } else {
+                        clearInterval(interval);
+                        isAnimating = false;
+                        if (userGuess === dailyPatient.diagnosis) {
+                            document.getElementById('inputGroupContainer').style.display = 'none';
+                            document.getElementById('rxSection').style.display = 'block';
+                            document.getElementById('rxSection').scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                }, 400);
+            }
+        }
+
+        function setupResultCard(diagTries, rxTries) {
+            document.getElementById('modalDiagnosis').innerText = dailyPatient.diagnosis.split(" (")[0]; 
+            document.getElementById('statDiagTries').innerText = diagTries;
+            document.getElementById('statRxTries').innerText = rxTries;
+            
+            let playerNumber = localStorage.getItem('mediIdlePlayerNumber');
+            if (!playerNumber) {
+                const baseCount = 31000 + (dailyPatient.dayIndex * 137) % 5000;
+                playerNumber = baseCount + (new Date().getHours() * 120);
+                localStorage.setItem('mediIdlePlayerNumber', playerNumber);
+            }
+            document.getElementById('randomPlayerCount').innerText = playerNumber;
+            
+            if (!localStorage.getItem('mediIdleWonToday')) {
+                userStats.played++;
+                userStats.wins++;
+                userStats.streak++;
+                localStorage.setItem('mediIdleStats', JSON.stringify(userStats));
+                localStorage.setItem('mediIdleWonToday', 'true');
+            }
+            startCountdown();
+        }
+
+        function shareResults() {
+            const savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys')) || [];
+            let emojiResult = `MediIdle Günün Vakası 🩺 (${savedKeys.length} Tahmin)\n\n`;
+            savedKeys.forEach(key => {
+                let targetKey = key;
+                if (currentLang === 'en' && diagnosisMap[key]) targetKey = diagnosisMap[key];
+                if (currentLang === 'tr') {
+                    for (let trKey in diagnosisMap) {
+                        if (diagnosisMap[trKey] === key) { targetKey = trKey; break; }
+                    }
+                }
+                const guessData = getActiveDatabase()[targetKey];
+                if (guessData) {
+                    ['diagnosis', 'branch', 'ageGroup', 'process', 'symptom'].forEach(field => {
+                        let val = (field === 'diagnosis') ? targetKey : guessData[field];
+                        emojiResult += (val === dailyPatient[field]) ? "🟩" : "🟥";
+                    });
+                    emojiResult += "\n";
+                }
+            });
+            navigator.clipboard.writeText(emojiResult);
+            alert("Sonuçlar panoya kopyalandı! 📋");
+        }
+
+        function shareBoneResults() {
+            navigator.clipboard.writeText("MediIdle Anatomi Modu 🦴 Doğru Bilindi!");
+            alert("Sonuçlar panoya kopyalandı! 📋");
+        }
+
+        function shareXrayResults() {
+            navigator.clipboard.writeText("MediIdle Radyoloji Modu 🩻 Doğru Bilindi!");
+            alert("Sonuçlar panoya kopyalandı! 📋");
+        }
+
+        function startCountdown() {
+            setInterval(() => {
+                const now = new Date();
+                const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+                const diff = tomorrow - now;
+                const hours = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                const minutes = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                const seconds = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+                document.getElementById('countdown').innerText = `${hours}:${minutes}:${seconds}`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
