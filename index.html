@@ -77,6 +77,8 @@
             transition: opacity 0.2s;
         }
         .action-header-btn:hover, .theme-toggle:hover, .lang-toggle:hover { opacity: 0.8; }
+        .reset-btn { border-color: #e74c3c; color: #e74c3c; }
+        .reset-btn:hover { background: rgba(231, 76, 60, 0.1); }
 
         .logo-container {
             width: 100%;
@@ -278,6 +280,7 @@
         }
 
         .result-card h1 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             font-size: 30px;
             font-weight: 900;
             letter-spacing: 2px;
@@ -404,6 +407,7 @@
             font-weight: bold;
         }
 
+        /* YAKINDA ROZETİ İÇİN CSS EKLENDİ */
         .mode-icon-badge .coming-soon {
             position: absolute;
             bottom: -8px; left: 50%;
@@ -482,6 +486,7 @@
     <div class="header-container">
         <h1>🩺 MediIdle</h1>
         <div class="header-btns">
+            <button class="action-header-btn reset-btn" id="btnReset" onclick="resetGame()">🔄 Sıfırla</button>
             <button class="theme-toggle" id="btnTheme" onclick="toggleTheme()">☀️ Tema</button>
             <button class="lang-toggle" id="btnLang" onclick="toggleLanguage()">🇬🇧 EN</button>
         </div>
@@ -607,6 +612,45 @@
             </div>
         </div>
 
+        <!-- 3. MOD: Dental / Diş Tomografisi Radyoloji Teşhisi (Gizli/Kilitli) -->
+        <div id="xrayModeView" class="mode-view">
+            <div style="font-size: 15px; font-weight:bold; color: #38bdf8; margin-bottom: 6px;" id="txtXrayHeader">🩻 Dental Tomografi & Diş Radyolojisi Teşhisi</div>
+            <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 12px;" id="txtXrayDesc">Negatoskop önünde incelenen bu diş ve çene 3D tomografi/panoramik kesiti hangi patolojik duruma veya diş yapısına aittir? Teşhis et!</div>
+            
+            <div class="media-container">
+                <img id="xrayImage" src="" alt="Dental Tomografi ve Diş Röntgeni Görüntüsü">
+            </div>
+
+            <div class="input-group" id="xrayInputGroup">
+                <input type="text" id="xrayGuessInput" placeholder="Diş veya patoloji adı yazın..." list="xrayDiagnosesList">
+                <datalist id="xrayDiagnosesList"></datalist>
+                <button class="guess-btn" id="xrayGuessBtn" onclick="makeXrayGuess()">Teşhis Et</button>
+            </div>
+
+            <div class="rx-guesses-list" id="xrayGuessesList"></div>
+
+            <button class="toggle-card-btn" id="toggleXrayCardBtn" onclick="toggleResultCard('xrayResultCard', 'toggleXrayCardBtn')">🏆 Radyoloji Sonucunu Göster</button>
+
+            <div id="xrayResultCard" class="result-card">
+                <h1 id="txtVictory3">ZAFER!</h1>
+                <div class="winner-preview">
+                    <div class="winner-avatar">🩻</div>
+                    <p class="winner-desc" id="txtWinSub3">Doğru tahmin ettin.</p>
+                    <h2 class="winner-title" id="modalXrayDiagnosis">3D Diş Tomografisi</h2>
+                </div>
+                <div class="stat-text"><span id="txtTriesText3">Deneme sayısı:</span> <span class="cyan-text" id="statXrayTries">1</span></div>
+
+                <button class="stats-trigger-btn" onclick="openStatsModal()" id="txtStatsBtnText3">📊 İstatistikler</button>
+
+                <div class="modes-nav-bar" id="modesNavBar3"></div>
+                <div class="completion-banner" id="completionBanner3">🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz.</div>
+
+                <div class="action-btns" style="margin-top: 15px;">
+                    <button class="card-btn share-btn" id="txtShareBtn3" onclick="shareXrayResults()">📤 Paylaş</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <!-- İstatistik Penceresi -->
@@ -638,6 +682,7 @@
     <script>
         const i18n = {
             tr: {
+                reset: "🔄 Sıfırla",
                 theme: "☀️ Tema",
                 sub: "Günün Klinik Vaka ve Anatomi Bulmacası",
                 anamnesisTitle: "Hasta Anamnezi & Öykü",
@@ -652,6 +697,10 @@
                 boneDesc: "Bu röntgen / anatomi görseli hangi kemik veya yapıya aittir? Teşhis et!",
                 bonePlaceholder: "Kemik adı yazın...",
                 boneBtn: "Teşhis Et",
+                xrayHeader: "🩻 Dental Tomografi & Diş Radyolojisi Teşhisi",
+                xrayDesc: "Negatoskop önünde incelenen bu diş ve çene 3D tomografi/panoramik kesiti hangi patolojik duruma veya diş yapısına aittir? Teşhis et!",
+                xrayPlaceholder: "Diş veya patoloji adı yazın...",
+                xrayBtn: "Teşhis Et",
                 victory: "ZAFER!",
                 winSub: "Doğru tahmin ettin.",
                 pCount1: "Bugünün vakasını bulan",
@@ -676,6 +725,7 @@
                 completionText: "🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz."
             },
             en: {
+                reset: "🔄 Reset",
                 theme: "☀️ Theme",
                 sub: "Daily Clinical Case & Anatomy Puzzle",
                 anamnesisTitle: "Patient Anamnesis & History",
@@ -690,6 +740,10 @@
                 boneDesc: "What bone or anatomical structure does this image show? Diagnose it!",
                 bonePlaceholder: "Type bone name...",
                 boneBtn: "Diagnose",
+                xrayHeader: "🩻 Dental Tomography & Radiology Diagnosis",
+                xrayDesc: "What dental or pathological condition does this 3D scan/panoramic view show? Diagnose it!",
+                xrayPlaceholder: "Type diagnosis...",
+                xrayBtn: "Diagnose",
                 victory: "VICTORY!",
                 winSub: "You guessed correctly.",
                 pCount1: "You are the",
@@ -746,7 +800,7 @@
             "Amoksisilin": "Amoxicillin",
             "Penisilin": "Penicillin",
             "Salbutamol": "Salbutamol",
-            "Deksketoprofen": "Deksketoprofen",
+            "Deksketoprofen": "Dexketoprofen",
             "Ibuprofen": "Ibuprofen",
             "Diclofenac": "Diclofenac",
             "Demir Sülfat": "Iron Sulfate",
@@ -806,25 +860,34 @@
         const boneCases = {
             tr: [
                 { name: "Orta Falanks Kırığı", difficulty: "Orta", url: "images/middle-phalanx-fracture-importance-of-using-two-x-ray-views-in-trauma (1) (7)_2.png" },
-                { name: "Tibia ve Fibula", difficulty: "Kolay", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
-                { name: "Kalkaneus Kırığı", difficulty: "Zor", url: "images/calcaneal-fracture-ankle-x-ray.png" },
-                { name: "Servikal Omurga Kırığı", difficulty: "Zor", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
+                { name: "Tibia ve Fibula (Alt Ekstremite Grafisi)", difficulty: "Kolay", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
+                { name: "Kalkaneus (Topuk Kemiği Kırığı)", difficulty: "Zor", url: "images/calcaneal-fracture-ankle-x-ray.png" },
+                { name: "Servikal Omurga (C2 Teardrop Kırığı)", difficulty: "Zor", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
                 { name: "Lineer Kafa Kırığı", difficulty: "Orta", url: "images/skull-fracture-linear-1 (1)_4.jpg" },
-                { name: "Femur Boyun Kırığı", difficulty: "Zor", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
-                { name: "Talus Lezyonu", difficulty: "Zor", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" },
+                { name: "Subkapital Femur Boyun Kırığı", difficulty: "Zor", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
+                { name: "Talus Osteokondral Lezyonu", difficulty: "Zor", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" },
                 { name: "Atipik Femur Kırığı", difficulty: "Zor", url: "images/atypical-femoral-fracture-and-osteogenesis-imperfecta.png" },
                 { name: "Barton Kırığı", difficulty: "Orta", url: "images/barton-fracture-1 (1).png" }
             ],
             en: [
                 { name: "Middle Phalanx Fracture", difficulty: "Medium", url: "images/middle-phalanx-fracture-importance-of-using-two-x-ray-views-in-trauma (1) (7)_2.png" },
-                { name: "Tibia and Fibula", difficulty: "Easy", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
-                { name: "Calcaneus Fracture", difficulty: "Hard", url: "images/calcaneal-fracture-ankle-x-ray.png" },
-                { name: "Cervical Spine Fracture", difficulty: "Hard", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
+                { name: "Tibia and Fibula (Lower Limb)", difficulty: "Easy", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
+                { name: "Calcaneus (Heel Bone Fracture)", difficulty: "Hard", url: "images/calcaneal-fracture-ankle-x-ray.png" },
+                { name: "Cervical Spine (C2 Teardrop Fracture)", difficulty: "Hard", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
                 { name: "Linear Skull Fracture", difficulty: "Medium", url: "images/skull-fracture-linear-1 (1)_4.jpg" },
                 { name: "Subcapital Femoral Neck Fracture", difficulty: "Hard", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
-                { name: "Talus Lesion", difficulty: "Hard", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" },
+                { name: "Talus Osteochondral Lesion", difficulty: "Hard", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" },
                 { name: "Atypical Femoral Fracture", difficulty: "Hard", url: "images/atypical-femoral-fracture-and-osteogenesis-imperfecta.png" },
                 { name: "Barton Fracture", difficulty: "Medium", url: "images/barton-fracture-1 (1).png" }
+            ]
+        };
+
+        const xrayCases = {
+            tr: [
+                { name: "3D Diş Tomografisi", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }
+            ],
+            en: [
+                { name: "3D Dental Tomography", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }
             ]
         };
 
@@ -863,8 +926,14 @@
             return list[getDailyIndex(list.length)];
         }
 
+        function getDailyXrayCase() {
+            const list = xrayCases[currentLang];
+            return list[getDailyIndex(list.length)];
+        }
+
         let dailyPatient = getDailyPatient();
         let dailyBoneCase = getDailyBoneCase();
+        let dailyXrayCase = getDailyXrayCase();
 
         function switchMode(targetMode) {
             if (targetMode === 3) {
@@ -873,6 +942,7 @@
             }
 
             const caseWon = localStorage.getItem('mediIdleRxWon') === 'true';
+            const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
 
             if (targetMode === 2 && !caseWon) {
                 alert(i18n[currentLang].alertLocked);
@@ -884,6 +954,7 @@
             
             if(targetMode === 1) document.getElementById('caseModeView').style.display = 'block';
             if(targetMode === 2) document.getElementById('boneModeView').style.display = 'block';
+            if(targetMode === 3) document.getElementById('xrayModeView').style.display = 'block';
 
             renderModesNavBars();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -892,10 +963,12 @@
         function renderModesNavBars() {
             const caseWon = localStorage.getItem('mediIdleRxWon') === 'true';
             const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+            const xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
+            // 3. mod deaktif olduğu için allCompleted hesabını şimdilik ilk iki moda bağlayabiliriz
             const allCompleted = caseWon && boneWon;
 
-            const navBars = ['modesNavBar1', 'modesNavBar2'];
-            const banners = ['completionBanner1', 'completionBanner2'];
+            const navBars = ['modesNavBar1', 'modesNavBar2', 'modesNavBar3'];
+            const banners = ['completionBanner1', 'completionBanner2', 'completionBanner3'];
 
             navBars.forEach((barId, idx) => {
                 const bar = document.getElementById(barId);
@@ -912,7 +985,7 @@
                         🦴 ${boneWon ? '<div class="check-mark">✓</div>' : ''}
                     </div>
                     <div class="mode-icon-badge locked" onclick="switchMode(3)">
-                        🩻 <div class="coming-soon">YAKINDA</div>
+                        🩻 <div class="coming-soon">${currentLang === 'tr' ? 'YAKINDA' : 'SOON'}</div>
                     </div>
                 `;
 
@@ -948,21 +1021,31 @@
             rxGuessesHistory = savedRx;
 
             const oldBoneIndex = boneCases[currentLang === 'tr' ? 'en' : 'tr'].findIndex(b => b.name === (dailyBoneCase ? dailyBoneCase.name : ""));
+            const oldXrayName = dailyXrayCase ? dailyXrayCase.name : "";
 
             dailyPatient = getDailyPatient();
             dailyBoneCase = getDailyBoneCase();
+            dailyXrayCase = getDailyXrayCase();
 
             if (oldBoneIndex !== -1 && boneCases[currentLang][oldBoneIndex]) {
                 dailyBoneCase = boneCases[currentLang][oldBoneIndex];
             }
+            if (oldXrayName) {
+                const xrayIndex = xrayCases[currentLang === 'tr' ? 'en' : 'tr'].findIndex(x => x.name === oldXrayName);
+                if (xrayIndex !== -1 && xrayCases[currentLang][xrayIndex]) {
+                    dailyXrayCase = xrayCases[currentLang][xrayIndex];
+                }
+            }
 
             document.getElementById('anamnesisText').innerText = dailyPatient.anamnesis;
             document.getElementById('boneImage').src = dailyBoneCase.url;
+            document.getElementById('xrayImage').src = dailyXrayCase.url;
 
             updateLanguageUI();
             updateDatalist();
             updateRxList();
             updateBoneDatalist();
+            updateXrayDatalist();
             renderModesNavBars();
             
             document.getElementById('tableBody').innerHTML = '';
@@ -981,6 +1064,7 @@
 
             const rxWon = localStorage.getItem('mediIdleRxWon') === 'true';
             const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+            const xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
 
             const currentKeys = Object.keys(getActiveDatabase());
             if (savedKeys.includes(currentKeys[getDailyIndex(currentKeys.length)])) {
@@ -997,6 +1081,11 @@
                 document.getElementById('toggleBoneCardBtn').style.display = 'block';
                 document.getElementById('toggleBoneCardBtn').innerText = document.getElementById('boneResultCard').style.display === 'block' ? i18n[currentLang].toggleHide : i18n[currentLang].toggleShow;
             }
+            if (xrayWon) {
+                document.getElementById('xrayInputGroup').style.display = 'none';
+                document.getElementById('toggleXrayCardBtn').style.display = 'block';
+                document.getElementById('toggleXrayCardBtn').innerText = document.getElementById('xrayResultCard').style.display === 'block' ? i18n[currentLang].toggleHide : i18n[currentLang].toggleShow;
+            }
 
             document.getElementById('rxGuessesList').innerHTML = '';
             rxGuessesHistory.forEach(rxG => { renderRxGuessItem(rxG, isCorrectRx(rxG), 'rxGuessesList'); });
@@ -1004,10 +1093,15 @@
             document.getElementById('boneGuessesList').innerHTML = '';
             const savedBone = JSON.parse(localStorage.getItem('mediIdleBoneGuesses')) || [];
             savedBone.forEach(b => { renderRxGuessItem(b, b.toLowerCase() === dailyBoneCase.name.toLowerCase(), 'boneGuessesList'); });
+
+            document.getElementById('xrayGuessesList').innerHTML = '';
+            const savedXray = JSON.parse(localStorage.getItem('mediIdleXrayGuesses')) || [];
+            savedXray.forEach(x => { renderRxGuessItem(x, x.toLowerCase() === dailyXrayCase.name.toLowerCase(), 'xrayGuessesList'); });
         }
 
         function updateLanguageUI() {
             const t = i18n[currentLang];
+            document.getElementById('btnReset').innerText = t.reset;
             document.getElementById('btnTheme').innerText = t.theme;
             document.getElementById('btnLang').innerText = currentLang === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR';
             document.getElementById('txtSub').innerText = t.sub;
@@ -1032,22 +1126,32 @@
             document.getElementById('boneGuessInput').placeholder = t.bonePlaceholder;
             document.getElementById('boneGuessBtn').innerText = t.boneBtn;
 
+            document.getElementById('txtXrayHeader').innerText = t.xrayHeader;
+            document.getElementById('txtXrayDesc').innerText = t.xrayDesc;
+            document.getElementById('xrayGuessInput').placeholder = t.xrayPlaceholder;
+            document.getElementById('xrayGuessBtn').innerText = t.xrayBtn;
+
             document.getElementById('txtVictory1').innerText = t.victory;
             document.getElementById('txtVictory2').innerText = t.victory;
+            document.getElementById('txtVictory3').innerText = t.victory;
             document.getElementById('txtWinSub1').innerText = t.winSub;
             document.getElementById('txtWinSub2').innerText = t.winSub;
+            document.getElementById('txtWinSub3').innerText = t.winSub;
             document.getElementById('txtPlayerCountText1').innerText = t.pCount1;
             document.getElementById('txtPlayerCountText2').innerText = t.pCount2;
             document.getElementById('txtDiagTriesLabel').innerText = t.diagTries;
             document.getElementById('txtRxTriesLabel').innerText = t.rxTries;
             document.getElementById('txtTriesText2').innerText = t.triesText;
+            document.getElementById('txtTriesText3').innerText = t.triesText;
 
             document.getElementById('txtStatsBtnText').innerText = t.statsBtn;
             document.getElementById('txtStatsBtnText2').innerText = t.statsBtn;
+            document.getElementById('txtStatsBtnText3').innerText = t.statsBtn;
             document.getElementById('txtTimerTitle').innerText = t.timerTitle;
             document.getElementById('txtTimezone').innerText = t.timezone;
             document.getElementById('txtShareBtn1').innerText = t.shareBtn;
             document.getElementById('txtShareBtn2').innerText = t.shareBtn;
+            document.getElementById('txtShareBtn3').innerText = t.shareBtn;
 
             document.getElementById('txtModalTitle').innerText = t.modalTitle;
             document.getElementById('txtModalSubtitle').innerText = t.modalSubtitle;
@@ -1058,6 +1162,7 @@
 
             document.getElementById('modalDiagnosis').innerText = dailyPatient.diagnosis.split(" (")[0];
             document.getElementById('modalBoneDiagnosis').innerText = dailyBoneCase.name.split(" (")[0];
+            document.getElementById('modalXrayDiagnosis').innerText = dailyXrayCase.name.split(" (")[0];
         }
 
         const lastPlayedDate = localStorage.getItem('mediIdleDate');
@@ -1067,26 +1172,32 @@
             localStorage.removeItem('mediIdleGuessKeys');
             localStorage.removeItem('mediIdleRxGuesses');
             localStorage.removeItem('mediIdleBoneGuesses');
+            localStorage.removeItem('mediIdleXrayGuesses');
             localStorage.removeItem('mediIdleWonToday');
             localStorage.removeItem('mediIdleRxWon');
             localStorage.removeItem('mediIdleBoneWon');
+            localStorage.removeItem('mediIdleXrayWon');
             localStorage.removeItem('mediIdlePlayerNumber');
         }
 
         let rxGuessesHistory = JSON.parse(localStorage.getItem('mediIdleRxGuesses')) || [];
         let boneGuessesHistory = JSON.parse(localStorage.getItem('mediIdleBoneGuesses')) || [];
+        let xrayGuessesHistory = JSON.parse(localStorage.getItem('mediIdleXrayGuesses')) || [];
         let userStats = JSON.parse(localStorage.getItem('mediIdleStats')) || { played: 0, wins: 0, streak: 0 };
         let rxWon = localStorage.getItem('mediIdleRxWon') === 'true';
         let boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
+        let xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
 
         window.onload = function() {
             document.getElementById('anamnesisText').innerText = dailyPatient.anamnesis;
             document.getElementById('boneImage').src = dailyBoneCase.url;
+            document.getElementById('xrayImage').src = dailyXrayCase.url;
 
             updateLanguageUI();
             updateDatalist();
             updateRxList();
             updateBoneDatalist();
+            updateXrayDatalist();
             renderModesNavBars();
 
             const savedKeys = JSON.parse(localStorage.getItem('mediIdleGuessKeys'));
@@ -1121,6 +1232,13 @@
                 boneGuessesHistory.forEach(b => { renderRxGuessItem(b, true, 'boneGuessesList'); });
                 document.getElementById('statBoneTries').innerText = boneGuessesHistory.length;
             }
+
+            if (xrayWon) {
+                document.getElementById('xrayInputGroup').style.display = 'none';
+                document.getElementById('toggleXrayCardBtn').style.display = 'block';
+                xrayGuessesHistory.forEach(x => { renderRxGuessItem(x, true, 'xrayGuessesList'); });
+                document.getElementById('statXrayTries').innerText = xrayGuessesHistory.length;
+            }
         };
 
         function updateDatalist() {
@@ -1148,6 +1266,19 @@
                 if (!boneGuessesHistory.includes(b)) {
                     const opt = document.createElement('option');
                     opt.value = b;
+                    dataList.appendChild(opt);
+                }
+            });
+        }
+
+        function updateXrayDatalist() {
+            const dataList = document.getElementById('xrayDiagnosesList');
+            dataList.innerHTML = '';
+            const allXrays = xrayCases[currentLang].map(x => x.name).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
+            allXrays.forEach(diag => {
+                if (!xrayGuessesHistory.includes(diag)) {
+                    const opt = document.createElement('option');
+                    opt.value = diag;
                     dataList.appendChild(opt);
                 }
             });
@@ -1232,6 +1363,35 @@
             inputField.value = "";
         }
 
+        function makeXrayGuess() {
+            const inputField = document.getElementById('xrayGuessInput');
+            const userXray = inputField.value.trim();
+            if (!userXray) return;
+            if (xrayGuessesHistory.includes(userXray)) { alert(i18n[currentLang].alertAlreadyRx); inputField.value = ""; return; }
+
+            xrayGuessesHistory.push(userXray);
+            localStorage.setItem('mediIdleXrayGuesses', JSON.stringify(xrayGuessesHistory));
+
+            const isCorrect = (userXray.toLowerCase() === dailyXrayCase.name.toLowerCase());
+            if (isCorrect) {
+                xrayWon = true;
+                localStorage.setItem('mediIdleXrayWon', 'true');
+                renderRxGuessItem(userXray, true, 'xrayGuessesList');
+                document.getElementById('xrayInputGroup').style.display = 'none';
+                document.getElementById('toggleXrayCardBtn').style.display = 'block';
+                document.getElementById('statXrayTries').innerText = xrayGuessesHistory.length;
+                document.getElementById('xrayResultCard').style.display = 'block';
+                document.getElementById('toggleXrayCardBtn').innerText = i18n[currentLang].toggleHide;
+                document.getElementById('xrayResultCard').scrollIntoView({ behavior: 'smooth' });
+                renderModesNavBars();
+                triggerConfetti();
+            } else {
+                renderRxGuessItem(userXray, false, 'xrayGuessesList');
+                updateXrayDatalist();
+            }
+            inputField.value = "";
+        }
+
         function renderRxGuessItem(text, isSuccess, containerId) {
             const listContainer = document.getElementById(containerId);
             const item = document.createElement('div');
@@ -1243,6 +1403,13 @@
         function toggleTheme() {
             const body = document.body;
             body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
+        function resetGame() {
+            if (confirm(currentLang === 'tr' ? "Oyun ilerlemesini sıfırlamak istediğine emin misin?" : "Are you sure you want to reset game progress?")) {
+                localStorage.clear();
+                location.reload();
+            }
         }
 
         function openStatsModal() {
@@ -1421,6 +1588,11 @@
 
         function shareBoneResults() {
             navigator.clipboard.writeText("MediIdle Anatomi Modu 🦴 Doğru Bilindi!");
+            alert("Sonuçlar panoya kopyalandı! 📋");
+        }
+
+        function shareXrayResults() {
+            navigator.clipboard.writeText("MediIdle Radyoloji Modu 🩻 Doğru Bilindi!");
             alert("Sonuçlar panoya kopyalandı! 📋");
         }
 
