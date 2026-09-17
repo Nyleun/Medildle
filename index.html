@@ -572,31 +572,31 @@
             </div>
         </div>
 
-        <!-- 2. MOD: Kemik ve Radyoloji/Anatomi Modu (Yüklediğin 50 Görsele Tam Uyumlu) -->
+        <!-- 2. MOD: Kemik ve Anatomi Teşhisi (Normal Anatomi ve Yapılar) -->
         <div id="boneModeView" class="mode-view">
-            <div style="font-size: 15px; font-weight:bold; color: #38bdf8; margin-bottom: 6px;" id="txtBoneHeader">🦴 Kemik ve Radyoloji Teşhisi</div>
-            <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 12px;" id="txtBoneDesc">Bu röntgen / anatomi görseli hangi kemik veya yapıya aittir? Teşhis et!</div>
+            <div style="font-size: 15px; font-weight:bold; color: #38bdf8; margin-bottom: 6px;" id="txtBoneHeader">🦴 Kemik ve Anatomi Teşhisi</div>
+            <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 12px;" id="txtBoneDesc">Bu anatomi / iskelet görseli hangi kemik veya yapıya aittir? Teşhis et!</div>
             
             <div class="media-container">
-                <img id="boneImage" src="" alt="Kemik ve Radyoloji Görseli">
+                <img id="boneImage" src="" alt="Kemik ve Anatomi Görseli">
             </div>
 
             <div class="input-group" id="boneInputGroup">
-                <input type="text" id="boneGuessInput" placeholder="Kemik adı yazın..." list="boneDiagnosesList">
+                <input type="text" id="boneGuessInput" placeholder="Kemik veya yapı adı yazın..." list="boneDiagnosesList">
                 <datalist id="boneDiagnosesList"></datalist>
                 <button class="guess-btn" id="boneGuessBtn" onclick="makeBoneGuess()">Teşhis Et</button>
             </div>
 
             <div class="rx-guesses-list" id="boneGuessesList"></div>
 
-            <button class="toggle-card-btn" id="toggleBoneCardBtn" onclick="toggleResultCard('boneResultCard', 'toggleBoneCardBtn')">🏆 Kemik Teşhis Sonucunu Göster</button>
+            <button class="toggle-card-btn" id="toggleBoneCardBtn" onclick="toggleResultCard('boneResultCard', 'toggleBoneCardBtn')">🏆 Anatomi Teşhis Sonucunu Göster</button>
 
             <div id="boneResultCard" class="result-card">
                 <h1 id="txtVictory2">ZAFER!</h1>
                 <div class="winner-preview">
                     <div class="winner-avatar">🦴</div>
                     <p class="winner-desc" id="txtWinSub2">Doğru tahmin ettin.</p>
-                    <h2 class="winner-title" id="modalBoneDiagnosis">Kemik Teşhisi</h2>
+                    <h2 class="winner-title" id="modalBoneDiagnosis">Anatomi Teşhisi</h2>
                 </div>
                 <div class="stat-text"><span id="txtTriesText2">Deneme sayısı:</span> <span class="cyan-text" id="statBoneTries">1</span></div>
 
@@ -692,9 +692,9 @@
                 rxDesc: "Doğru tanıyı buldun! Şimdi bu vaka için ilk tercih tedaviyi seç:",
                 rxPlaceholder: "Etken madde veya tedavi yazın...",
                 rxBtn: "Tedavi Et",
-                boneHeader: "🦴 Kemik ve Radyoloji Teşhisi",
-                boneDesc: "Bu röntgen / anatomi görseli hangi kemik veya yapıya aittir? Teşhis et!",
-                bonePlaceholder: "Kemik adı yazın...",
+                boneHeader: "🦴 Kemik ve Anatomi Teşhisi",
+                boneDesc: "Bu anatomi / iskelet görseli hangi kemik veya yapıya aittir? Teşhis et!",
+                bonePlaceholder: "Kemik veya yapı adı yazın...",
                 boneBtn: "Teşhis Et",
                 xrayHeader: "🩻 Dental Tomografi & Diş Radyolojisi Teşhisi",
                 xrayDesc: "Negatoskop önünde incelenen bu diş ve çene 3D tomografi/panoramik kesiti hangi patolojik duruma veya diş yapısına aittir? Teşhis et!",
@@ -735,9 +735,9 @@
                 rxDesc: "You found the correct diagnosis! Now select first-choice treatment:",
                 rxPlaceholder: "Type active substance or treatment...",
                 rxBtn: "Treat",
-                boneHeader: "🦴 Bone & Radiology Diagnosis",
+                boneHeader: "🦴 Bone & Anatomy Diagnosis",
                 boneDesc: "What bone or anatomical structure does this image show? Diagnose it!",
-                bonePlaceholder: "Type bone name...",
+                bonePlaceholder: "Type bone or structure name...",
                 boneBtn: "Diagnose",
                 xrayHeader: "🩻 Dental Tomography & Radiology Diagnosis",
                 xrayDesc: "What dental or pathological condition does this 3D scan/panoramic view show? Diagnose it!",
@@ -845,7 +845,7 @@
                 "Acute Tonsillitis": { branch: "ENT", ageGroup: "Young (18-35)", process: "Acute", symptom: "Sore Throat", anamnesis: "A 21-year-old university student presented with severe sore throat worsening with swallowing, fever, and tender neck lymph nodes.", rx: ["Amoxicillin", "Penicillin"] },
                 "Asthma Attack": { branch: "Pulmonology", ageGroup: "Young (18-35)", process: "Acute", symptom: "Shortness of Breath", anamnesis: "A 26-year-old female presented with sudden onset shortness of breath, cough, and expiratory wheezing following dust exposure during house cleaning.", rx: ["Salbutamol"] },
                 "Kidney Stone (Nephrolithiasis)": { branch: "Urology", ageGroup: "Adult (36-64)", process: "Acute", symptom: "Flank Pain", anamnesis: "A 42-year-old male presented with excruciating right flank pain radiating to the groin, causing severe restlessness and inability to stay still.", rx: ["Dexketoprofen", "Ibuprofen", "Diclofenac"] },
-                "Iron Deficiency Anemia": { branch: "Hematology", ageGroup: "Adult (36-64)", process: "Chronic", symptom: "Fatigue / Tiredness", anamnesis: "A 38-year-old female presented with chronic severe fatigue, hair loss, brittle nails, and unusual cravings to chew ice over months.", rx: ["Iron Sulfate", "Iron Supplement", "Ferrum"] },
+                "Iron Deficiency Anemia": { branch: "Hematology", ageGroup: "Adult (36-64)", process: "Kronik", symptom: "Fatigue / Tiredness", anamnesis: "A 38-year-old female presented with chronic severe fatigue, hair loss, brittle nails, and unusual cravings to chew ice over months.", rx: ["Iron Sulfate", "Iron Supplement", "Ferrum"] },
                 "Gastroesophageal Reflux": { branch: "Gastroenterology", ageGroup: "Adult (36-64)", process: "Chronic", symptom: "Heartburn", anamnesis: "A 45-year-old male presented with chronic retrosternal burning (heartburn) and sour regurgitation, especially when lying down late at night.", rx: ["Omeprazole", "Pantoprazole"] },
                 "Hypertensive Crisis": { branch: "Cardiology", ageGroup: "Elderly (65+)", process: "Acute", symptom: "Headache", anamnesis: "A 68-year-old patient with history of hypertension presented with severe occipital throbbing headache and lightheadedness after irregular medication intake.", rx: ["Kaptopril"] },
                 "Hyperthyroidism": { branch: "Endocrinology", ageGroup: "Young (18-35)", process: "Chronic", symptom: "Palpitations / Weight Loss", anamnesis: "A 28-year-old female presented with rapid weight loss despite increased appetite, fine tremors in hands, palpitations, and nervousness.", rx: ["Methimazole"] },
@@ -856,113 +856,120 @@
             }
         };
 
-        // Yüklediğin görsellerin sıralamasına (kemik1 - kemik50) birebir uygun anatomi listesi
+        // 50 Anatomi / Kemik Görseli (Dosya Adı Bazlı Doğru Eşleşme)
         const boneCases = {
             tr: [
-                { name: "Radius Kırığı", url: "images/kemik1.png" },
-                { name: "Radius ve Ulna Cisim Kırığı", url: "images/kemik2.png" },
-                { name: "Distal Falanks Kırığı (1. Parmak)", url: "images/kemik3.png" },
-                { name: "Distal Falanks Kırığı", url: "images/kemik4.png" },
-                { name: "Proksimal Falanks Kırığı", url: "images/kemik5.png" },
-                { name: "Orta Falanks Kırığı", url: "images/kemik6.png" },
-                { name: "Metakarp Kırığı", url: "images/kemik7.png" },
-                { name: "Distal Radius Kırığı", url: "images/kemik8.png" },
-                { name: "Barton Kırığı", url: "images/kemik9.png" },
-                { name: "Colles Kırığı", url: "images/kemik10.png" },
-                { name: "Smith Kırığı", url: "images/kemik11.png" },
-                { name: "Falanks Avülsiyon Kırığı", url: "images/kemik12.png" },
-                { name: "Başparmak Falanks Kırığı", url: "images/kemik13.png" },
-                { name: "Monteggia Kırığı", url: "images/kemik14.png" },
-                { name: "Galeazzi Kırığı", url: "images/kemik15.png" },
-                { name: "Scaphoid Kırığı", url: "images/kemik16.png" },
-                { name: "Bennet Kırığı", url: "images/kemik17.png" },
-                { name: "İşaret Parmağı Falanks Kırığı", url: "images/kemik18.png" },
-                { name: "Tibia Distal Kırığı", url: "images/kemik19.png" },
-                { name: "Fibula Distal Kırığı", url: "images/kemik20.png" },
-                { name: "Kalkaneus (Topuk Kemiği) Kırığı", url: "images/kemik21.png" },
-                { name: "Servikal Omurga Kırığı (C2)", url: "images/kemik22.png" },
-                { name: "Metakarp Boyun Kırığı", url: "images/kemik23.png" },
-                { name: "El Bilek Çıkığı / Kırığı", url: "images/kemik24.png" },
-                { name: "2. Parmak Falanks Kırığı", url: "images/kemik25.png" },
-                { name: "3. Parmak Falanks Kırığı", url: "images/kemik26.png" },
-                { name: "4. Parmak Falanks Kırığı", url: "images/kemik27.png" },
-                { name: "5. Parmak Falanks Kırığı", url: "images/kemik28.png" },
-                { name: "El Başparmak Proksimal Kırık", url: "images/kemik29.png" },
-                { name: "El İntraartiküler Falanks Kırığı", url: "images/kemik30.png" },
-                { name: "El 2. Parmak Eklem Kırığı", url: "images/kemik31.png" },
-                { name: "El 3. Parmak Eklem Kırığı", url: "images/kemik32.png" },
-                { name: "El 4. Parmak Eklem Kırığı", url: "images/kemik33.png" },
-                { name: "El 5. Parmak Eklem Kırığı", url: "images/kemik34.png" },
-                { name: "Parmak Tuğla Kırığı", url: "images/kemik35.png" },
-                { name: "Distal Interfalangeal Kırık", url: "images/kemik36.png" },
-                { name: "Proksimal Interfalangeal Kırık", url: "images/kemik37.png" },
-                { name: "Parmak Çıkıklı Kırık", url: "images/kemik38.png" },
-                { name: "El Falanks Cisim Kırığı", url: "images/kemik39.png" },
-                { name: "Parmak Taban Kırığı", url: "images/kemik40.png" },
-                { name: "El Serçe Parmağı Kırığı", url: "images/kemik41.png" },
-                { name: "Radius Alt Uç Kırığı", url: "images/kemik42.png" },
-                { name: "Ulna Alt Uç Kırığı", url: "images/kemik43.png" },
-                { name: "Önkol Alt Bölge Kırığı", url: "images/kemik44.png" },
-                { name: "Bilek Bölgesi Çatlak Kırığı", url: "images/kemik45.png" },
-                { name: "Distal Önkol Kırığı", url: "images/kemik46.png" },
-                { name: "Lineer Kafa Kırığı", url: "images/kemik47.png" },
-                { name: "Pelvis Çatı Kırığı", url: "images/kemik48.png" },
-                { name: "Asetabulum Kırığı", url: "images/kemik49.png" },
-                { name: "El Bileği ve Karpal Kırık", url: "images/kemik50.png" }
+                { name: "Radius", file: "kemik1.png" },
+                { name: "Radius ve Ulna", file: "kemik2.png" },
+                { name: "Distal Falanks (1. Parmak)", file: "kemik3.png" },
+                { name: "Distal Falanks", file: "kemik4.png" },
+                { name: "Proksimal Falanks", file: "kemik5.png" },
+                { name: "Orta Falanks", file: "kemik6.png" },
+                { name: "Metakarp (Tarak Kemiği)", file: "kemik7.png" },
+                { name: "Distal Radius", file: "kemik8.png" },
+                { name: "Radius Alt Uç", file: "kemik9.png" },
+                { name: "El Bileği ve Radius", file: "kemik10.png" },
+                { name: "Önkol Distal Uç", file: "kemik11.png" },
+                { name: "Falanks Tabanı", file: "kemik12.png" },
+                { name: "Başparmak Falanksı", file: "kemik13.png" },
+                { name: "Radius ve Ulna Cismi", file: "kemik14.png" },
+                { name: "Önkol Kemikleri", file: "kemik15.png" },
+                { name: "Scaphoid (El Bilek Kemiği)", file: "kemik16.png" },
+                { name: "Başparmak Metakarbı", file: "kemik17.png" },
+                { name: "İşaret Parmağı Falanksı", file: "kemik18.png" },
+                { name: "Distal Tibia", file: "kemik19.png" },
+                { name: "Distal Fibula", file: "kemik20.png" },
+                { name: "Kalkaneus (Topuk Kemiği)", file: "kemik21.png" },
+                { name: "Servikal Omurga (C2)", file: "kemik22.png" },
+                { name: "Metakarp Boynu", file: "kemik23.png" },
+                { name: "Karpal Kemikler ve Bilek", file: "kemik24.png" },
+                { name: "2. Parmak Falanksı", file: "kemik25.png" },
+                { name: "3. Parmak Falanksı", file: "kemik26.png" },
+                { name: "4. Parmak Falanksı", file: "kemik27.png" },
+                { name: "5. Parmak Falanksı", file: "kemik28.png" },
+                { name: "Başparmak Proksimal Falanks", file: "kemik29.png" },
+                { name: "El Eklem Aralığı", file: "kemik30.png" },
+                { name: "2. Parmak Eklemi", file: "kemik31.png" },
+                { name: "3. Parmak Eklemi", file: "kemik32.png" },
+                { name: "4. Parmak Eklemi", file: "kemik33.png" },
+                { name: "5. Parmak Eklemi", file: "kemik34.png" },
+                { name: "Parmak Ucu (Tuft)", file: "kemik35.png" },
+                { name: "Distal Interfalangeal Eklem", file: "kemik36.png" },
+                { name: "Proksimal Interfalangeal Eklem", file: "kemik37.png" },
+                { name: "Parmak Eklem Yapısı", file: "kemik38.png" },
+                { name: "Falanks Cismİ (Şaftı)", file: "kemik39.png" },
+                { name: "Parmak Taban Yapısı", file: "kemik40.png" },
+                { name: "Serçe Parmağı Anatomisi", file: "kemik41.png" },
+                { name: "Radius Epifizi", file: "kemik42.png" },
+                { name: "Ulna Epifizi", file: "kemik43.png" },
+                { name: "Önkol Distal Bölge", file: "kemik44.png" },
+                { name: "Bilek Bölgesi", file: "kemik45.png" },
+                { name: "Distal Önkol", file: "kemik46.png" },
+                { name: "Kafatası (Kranial Yapı)", file: "kemik47.png" },
+                { name: "Pelvis Halkası", file: "kemik48.png" },
+                { name: "Asetabulum", file: "kemik49.png" },
+                { name: "Karpal Kemikler", file: "kemik50.png" }
             ],
             en: [
-                { name: "Radius Fracture", url: "images/kemik1.png" },
-                { name: "Radius and Ulna Shaft Fracture", url: "images/kemik2.png" },
-                { name: "Distal Phalanx Fracture (1st)", url: "images/kemik3.png" },
-                { name: "Distal Phalanx Fracture", url: "images/kemik4.png" },
-                { name: "Proximal Phalanx Fracture", url: "images/kemik5.png" },
-                { name: "Middle Phalanx Fracture", url: "images/kemik6.png" },
-                { name: "Metacarpal Fracture", url: "images/kemik7.png" },
-                { name: "Distal Radius Fracture", url: "images/kemik8.png" },
-                { name: "Barton Fracture", url: "images/kemik9.png" },
-                { name: "Colles Fracture", url: "images/kemik10.png" },
-                { name: "Smith Fracture", url: "images/kemik11.png" },
-                { name: "Phalanx Avulsion Fracture", url: "images/kemik12.png" },
-                { name: "Thumb Phalanx Fracture", url: "images/kemik13.png" },
-                { name: "Monteggia Fracture", url: "images/kemik14.png" },
-                { name: "Galeazzi Fracture", url: "images/kemik15.png" },
-                { name: "Scaphoid Fracture", url: "images/kemik16.png" },
-                { name: "Bennett Fracture", url: "images/kemik17.png" },
-                { name: "Index Finger Phalanx Fracture", url: "images/kemik18.png" },
-                { name: "Distal Tibia Fracture", url: "images/kemik19.png" },
-                { name: "Distal Fibula Fracture", url: "images/kemik20.png" },
-                { name: "Calcaneus Fracture", url: "images/kemik21.png" },
-                { name: "Cervical Spine Fracture (C2)", url: "images/kemik22.png" },
-                { name: "Metacarpal Neck Fracture", url: "images/kemik23.png" },
-                { name: "Wrist Dislocation / Fracture", url: "images/kemik24.png" },
-                { name: "2nd Finger Phalanx Fracture", url: "images/kemik25.png" },
-                { name: "3rd Finger Phalanx Fracture", url: "images/kemik26.png" },
-                { name: "4th Finger Phalanx Fracture", url: "images/kemik27.png" },
-                { name: "5th Finger Phalanx Fracture", url: "images/kemik28.png" },
-                { name: "Thumb Proximal Fracture", url: "images/kemik29.png" },
-                { name: "Intraarticular Phalanx Fracture", url: "images/kemik30.png" },
-                { name: "2nd Finger Joint Fracture", url: "images/kemik31.png" },
-                { name: "3rd Finger Joint Fracture", url: "images/kemik32.png" },
-                { name: "4th Finger Joint Fracture", url: "images/kemik33.png" },
-                { name: "5th Finger Joint Fracture", url: "images/kemik34.png" },
-                { name: "Finger Tuft Fracture", url: "images/kemik35.png" },
-                { name: "Distal Interphalangeal Fracture", url: "images/kemik36.png" },
-                { name: "Proximal Interphalangeal Fracture", url: "images/kemik37.png" },
-                { name: "Finger Fracture-Dislocation", url: "images/kemik38.png" },
-                { name: "Phalanx Shaft Fracture", url: "images/kemik39.png" },
-                { name: "Finger Base Fracture", url: "images/kemik40.png" },
-                { name: "Little Finger Fracture", url: "images/kemik41.png" },
-                { name: "Distal Radius Fracture", url: "images/kemik42.png" },
-                { name: "Distal Ulna Fracture", url: "images/kemik43.png" },
-                { name: "Lower Forearm Fracture", url: "images/kemik44.png" },
-                { name: "Wrist Hairline Fracture", url: "images/kemik45.png" },
-                { name: "Distal Forearm Fracture", url: "images/kemik46.png" },
-                { name: "Linear Skull Fracture", url: "images/kemik47.png" },
-                { name: "Pelvic Ring Fracture", url: "images/kemik48.png" },
-                { name: "Acetabular Fracture", url: "images/kemik49.png" },
-                { name: "Carpal Bone Fracture", url: "images/kemik50.png" }
+                { name: "Radius", file: "kemik1.png" },
+                { name: "Radius and Ulna", file: "kemik2.png" },
+                { name: "Distal Phalanx (1st)", file: "kemik3.png" },
+                { name: "Distal Phalanx", file: "kemik4.png" },
+                { name: "Proximal Phalanx", file: "kemik5.png" },
+                { name: "Middle Phalanx", file: "kemik6.png" },
+                { name: "Metacarpal Bone", file: "kemik7.png" },
+                { name: "Distal Radius", file: "kemik8.png" },
+                { name: "Radius Lower End", file: "kemik9.png" },
+                { name: "Wrist and Radius", file: "kemik10.png" },
+                { name: "Distal Forearm", file: "kemik11.png" },
+                { name: "Phalanx Base", file: "kemik12.png" },
+                { name: "Thumb Phalanx", file: "kemik13.png" },
+                { name: "Radius and Ulna Shaft", file: "kemik14.png" },
+                { name: "Forearm Bones", file: "kemik15.png" },
+                { name: "Scaphoid Bone", file: "kemik16.png" },
+                { name: "Thumb Metacarpal", file: "kemik17.png" },
+                { name: "Index Finger Phalanx", file: "kemik18.png" },
+                { name: "Distal Tibia", file: "kemik19.png" },
+                { name: "Distal Fibula", file: "kemik20.png" },
+                { name: "Calcaneus (Heel Bone)", file: "kemik21.png" },
+                { name: "Cervical Spine (C2)", file: "kemik22.png" },
+                { name: "Metacarpal Neck", file: "kemik23.png" },
+                { name: "Carpal Bones and Wrist", file: "kemik24.png" },
+                { name: "2nd Finger Phalanx", file: "kemik25.png" },
+                { name: "3rd Finger Phalanx", file: "kemik26.png" },
+                { name: "4th Finger Phalanx", file: "kemik27.png" },
+                { name: "5th Finger Phalanx", file: "kemik28.png" },
+                { name: "Thumb Proximal Phalanx", file: "kemik29.png" },
+                { name: "Hand Joint Space", file: "kemik30.png" },
+                { name: "2nd Finger Joint", file: "kemik31.png" },
+                { name: "3rd Finger Joint", file: "kemik32.png" },
+                { name: "4th Finger Joint", file: "kemik33.png" },
+                { name: "5th Finger Joint", file: "kemik34.png" },
+                { name: "Finger Tuft", file: "kemik35.png" },
+                { name: "Distal Interphalangeal Joint", file: "kemik36.png" },
+                { name: "Proximal Interphalangeal Joint", file: "kemik37.png" },
+                { name: "Finger Joint Anatomy", file: "kemik38.png" },
+                { name: "Phalanx Shaft", file: "kemik39.png" },
+                { name: "Finger Base Structure", file: "kemik40.png" },
+                { name: "Little Finger Anatomy", file: "kemik41.png" },
+                { name: "Radius Epiphysis", file: "kemik42.png" },
+                { name: "Ulna Epiphysis", file: "kemik43.png" },
+                { name: "Lower Forearm Region", file: "kemik44.png" },
+                { name: "Wrist Region", file: "kemik45.png" },
+                { name: "Distal Forearm", file: "kemik46.png" },
+                { name: "Skull (Cranial Structure)", file: "kemik47.png" },
+                { name: "Pelvic Ring", file: "kemik48.png" },
+                { name: "Acetabulum", file: "kemik49.png" },
+                { name: "Carpal Bones", file: "kemik50.png" }
             ]
         };
+
+        function getProcessedBoneCases() {
+            return boneCases[currentLang].map(item => ({
+                name: item.name,
+                url: `images/${item.file}`
+            }));
+        }
 
         const xrayCases = {
             tr: [{ name: "3D Diş Tomografisi", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }],
@@ -1000,7 +1007,7 @@
         }
 
         function getDailyBoneCase() {
-            const list = boneCases[currentLang];
+            const list = getProcessedBoneCases();
             return list[getDailyIndex(list.length)];
         }
 
@@ -1094,16 +1101,14 @@
             localStorage.setItem('mediIdleRxGuesses', JSON.stringify(savedRx));
             rxGuessesHistory = savedRx;
 
-            const oldBoneIndex = boneCases[currentLang === 'tr' ? 'en' : 'tr'].findIndex(b => b.name === (dailyBoneCase ? dailyBoneCase.name : ""));
+            const processedBones = getProcessedBoneCases();
+            const oldBoneIndex = getDailyIndex(processedBones.length);
             const oldXrayName = dailyXrayCase ? dailyXrayCase.name : "";
 
             dailyPatient = getDailyPatient();
-            dailyBoneCase = getDailyBoneCase();
+            dailyBoneCase = processedBones[oldBoneIndex];
             dailyXrayCase = getDailyXrayCase();
 
-            if (oldBoneIndex !== -1 && boneCases[currentLang][oldBoneIndex]) {
-                dailyBoneCase = boneCases[currentLang][oldBoneIndex];
-            }
             if (oldXrayName) {
                 const xrayIndex = xrayCases[currentLang === 'tr' ? 'en' : 'tr'].findIndex(x => x.name === oldXrayName);
                 if (xrayIndex !== -1 && xrayCases[currentLang][xrayIndex]) {
@@ -1335,7 +1340,8 @@
         function updateBoneDatalist() {
             const dataList = document.getElementById('boneDiagnosesList');
             dataList.innerHTML = '';
-            const allBones = boneCases[currentLang].map(b => b.name).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
+            const processedBones = getProcessedBoneCases();
+            const allBones = processedBones.map(b => b.name).sort((a, b) => a.localeCompare(b, currentLang === 'tr' ? 'tr' : 'en'));
             allBones.forEach(b => {
                 if (!boneGuessesHistory.includes(b)) {
                     const opt = document.createElement('option');
