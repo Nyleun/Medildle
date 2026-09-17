@@ -407,7 +407,6 @@
             font-weight: bold;
         }
 
-        /* YAKINDA ROZETİ İÇİN CSS EKLENDİ */
         .mode-icon-badge .coming-soon {
             position: absolute;
             bottom: -8px; left: 50%;
@@ -573,7 +572,7 @@
             </div>
         </div>
 
-        <!-- 2. MOD: Kemik ve Radyoloji/Anatomi Modu -->
+        <!-- 2. MOD: Kemik ve Radyoloji/Anatomi Modu (Yüklediğin 50 Görsele Tam Uyumlu) -->
         <div id="boneModeView" class="mode-view">
             <div style="font-size: 15px; font-weight:bold; color: #38bdf8; margin-bottom: 6px;" id="txtBoneHeader">🦴 Kemik ve Radyoloji Teşhisi</div>
             <div style="font-size: 13px; color: var(--subtitle-color); margin-bottom: 12px;" id="txtBoneDesc">Bu röntgen / anatomi görseli hangi kemik veya yapıya aittir? Teşhis et!</div>
@@ -597,7 +596,7 @@
                 <div class="winner-preview">
                     <div class="winner-avatar">🦴</div>
                     <p class="winner-desc" id="txtWinSub2">Doğru tahmin ettin.</p>
-                    <h2 class="winner-title" id="modalBoneDiagnosis">El Kemikleri</h2>
+                    <h2 class="winner-title" id="modalBoneDiagnosis">Kemik Teşhisi</h2>
                 </div>
                 <div class="stat-text"><span id="txtTriesText2">Deneme sayısı:</span> <span class="cyan-text" id="statBoneTries">1</span></div>
 
@@ -857,38 +856,117 @@
             }
         };
 
+        // Yüklediğin görsellerin sıralamasına (kemik1 - kemik50) birebir uygun anatomi listesi
         const boneCases = {
             tr: [
-                { name: "Orta Falanks Kırığı", difficulty: "Orta", url: "images/middle-phalanx-fracture-importance-of-using-two-x-ray-views-in-trauma (1) (7)_2.png" },
-                { name: "Tibia ve Fibula (Alt Ekstremite Grafisi)", difficulty: "Kolay", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
-                { name: "Kalkaneus (Topuk Kemiği Kırığı)", difficulty: "Zor", url: "images/calcaneal-fracture-ankle-x-ray.png" },
-                { name: "Servikal Omurga (C2 Teardrop Kırığı)", difficulty: "Zor", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
-                { name: "Lineer Kafa Kırığı", difficulty: "Orta", url: "images/skull-fracture-linear-1 (1)_4.jpg" },
-                { name: "Subkapital Femur Boyun Kırığı", difficulty: "Zor", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
-                { name: "Talus Osteokondral Lezyonu", difficulty: "Zor", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" },
-                { name: "Atipik Femur Kırığı", difficulty: "Zor", url: "images/atypical-femoral-fracture-and-osteogenesis-imperfecta.png" },
-                { name: "Barton Kırığı", difficulty: "Orta", url: "images/barton-fracture-1 (1).png" }
+                { name: "Radius Kırığı", url: "images/kemik1.png" },
+                { name: "Radius ve Ulna Cisim Kırığı", url: "images/kemik2.png" },
+                { name: "Distal Falanks Kırığı (1. Parmak)", url: "images/kemik3.png" },
+                { name: "Distal Falanks Kırığı", url: "images/kemik4.png" },
+                { name: "Proksimal Falanks Kırığı", url: "images/kemik5.png" },
+                { name: "Orta Falanks Kırığı", url: "images/kemik6.png" },
+                { name: "Metakarp Kırığı", url: "images/kemik7.png" },
+                { name: "Distal Radius Kırığı", url: "images/kemik8.png" },
+                { name: "Barton Kırığı", url: "images/kemik9.png" },
+                { name: "Colles Kırığı", url: "images/kemik10.png" },
+                { name: "Smith Kırığı", url: "images/kemik11.png" },
+                { name: "Falanks Avülsiyon Kırığı", url: "images/kemik12.png" },
+                { name: "Başparmak Falanks Kırığı", url: "images/kemik13.png" },
+                { name: "Monteggia Kırığı", url: "images/kemik14.png" },
+                { name: "Galeazzi Kırığı", url: "images/kemik15.png" },
+                { name: "Scaphoid Kırığı", url: "images/kemik16.png" },
+                { name: "Bennet Kırığı", url: "images/kemik17.png" },
+                { name: "İşaret Parmağı Falanks Kırığı", url: "images/kemik18.png" },
+                { name: "Tibia Distal Kırığı", url: "images/kemik19.png" },
+                { name: "Fibula Distal Kırığı", url: "images/kemik20.png" },
+                { name: "Kalkaneus (Topuk Kemiği) Kırığı", url: "images/kemik21.png" },
+                { name: "Servikal Omurga Kırığı (C2)", url: "images/kemik22.png" },
+                { name: "Metakarp Boyun Kırığı", url: "images/kemik23.png" },
+                { name: "El Bilek Çıkığı / Kırığı", url: "images/kemik24.png" },
+                { name: "2. Parmak Falanks Kırığı", url: "images/kemik25.png" },
+                { name: "3. Parmak Falanks Kırığı", url: "images/kemik26.png" },
+                { name: "4. Parmak Falanks Kırığı", url: "images/kemik27.png" },
+                { name: "5. Parmak Falanks Kırığı", url: "images/kemik28.png" },
+                { name: "El Başparmak Proksimal Kırık", url: "images/kemik29.png" },
+                { name: "El İntraartiküler Falanks Kırığı", url: "images/kemik30.png" },
+                { name: "El 2. Parmak Eklem Kırığı", url: "images/kemik31.png" },
+                { name: "El 3. Parmak Eklem Kırığı", url: "images/kemik32.png" },
+                { name: "El 4. Parmak Eklem Kırığı", url: "images/kemik33.png" },
+                { name: "El 5. Parmak Eklem Kırığı", url: "images/kemik34.png" },
+                { name: "Parmak Tuğla Kırığı", url: "images/kemik35.png" },
+                { name: "Distal Interfalangeal Kırık", url: "images/kemik36.png" },
+                { name: "Proksimal Interfalangeal Kırık", url: "images/kemik37.png" },
+                { name: "Parmak Çıkıklı Kırık", url: "images/kemik38.png" },
+                { name: "El Falanks Cisim Kırığı", url: "images/kemik39.png" },
+                { name: "Parmak Taban Kırığı", url: "images/kemik40.png" },
+                { name: "El Serçe Parmağı Kırığı", url: "images/kemik41.png" },
+                { name: "Radius Alt Uç Kırığı", url: "images/kemik42.png" },
+                { name: "Ulna Alt Uç Kırığı", url: "images/kemik43.png" },
+                { name: "Önkol Alt Bölge Kırığı", url: "images/kemik44.png" },
+                { name: "Bilek Bölgesi Çatlak Kırığı", url: "images/kemik45.png" },
+                { name: "Distal Önkol Kırığı", url: "images/kemik46.png" },
+                { name: "Lineer Kafa Kırığı", url: "images/kemik47.png" },
+                { name: "Pelvis Çatı Kırığı", url: "images/kemik48.png" },
+                { name: "Asetabulum Kırığı", url: "images/kemik49.png" },
+                { name: "El Bileği ve Karpal Kırık", url: "images/kemik50.png" }
             ],
             en: [
-                { name: "Middle Phalanx Fracture", difficulty: "Medium", url: "images/middle-phalanx-fracture-importance-of-using-two-x-ray-views-in-trauma (1) (7)_2.png" },
-                { name: "Tibia and Fibula (Lower Limb)", difficulty: "Easy", url: "images/calcaneal-1fracture-ankle-x-ray.png" },
-                { name: "Calcaneus (Heel Bone Fracture)", difficulty: "Hard", url: "images/calcaneal-fracture-ankle-x-ray.png" },
-                { name: "Cervical Spine (C2 Teardrop Fracture)", difficulty: "Hard", url: "images/extension-teardrop-fracture-x-ray_3.jpg" },
-                { name: "Linear Skull Fracture", difficulty: "Medium", url: "images/skull-fracture-linear-1 (1)_4.jpg" },
-                { name: "Subcapital Femoral Neck Fracture", difficulty: "Hard", url: "images/subcapital-femoral-neck-fracture-6 (1) (1)_2.jpg" },
-                { name: "Talus Osteochondral Lesion", difficulty: "Hard", url: "images/osteochondral-lesion-of-the-talus-and-secondary-oa_2.jpg" },
-                { name: "Atypical Femoral Fracture", difficulty: "Hard", url: "images/atypical-femoral-fracture-and-osteogenesis-imperfecta.png" },
-                { name: "Barton Fracture", difficulty: "Medium", url: "images/barton-fracture-1 (1).png" }
+                { name: "Radius Fracture", url: "images/kemik1.png" },
+                { name: "Radius and Ulna Shaft Fracture", url: "images/kemik2.png" },
+                { name: "Distal Phalanx Fracture (1st)", url: "images/kemik3.png" },
+                { name: "Distal Phalanx Fracture", url: "images/kemik4.png" },
+                { name: "Proximal Phalanx Fracture", url: "images/kemik5.png" },
+                { name: "Middle Phalanx Fracture", url: "images/kemik6.png" },
+                { name: "Metacarpal Fracture", url: "images/kemik7.png" },
+                { name: "Distal Radius Fracture", url: "images/kemik8.png" },
+                { name: "Barton Fracture", url: "images/kemik9.png" },
+                { name: "Colles Fracture", url: "images/kemik10.png" },
+                { name: "Smith Fracture", url: "images/kemik11.png" },
+                { name: "Phalanx Avulsion Fracture", url: "images/kemik12.png" },
+                { name: "Thumb Phalanx Fracture", url: "images/kemik13.png" },
+                { name: "Monteggia Fracture", url: "images/kemik14.png" },
+                { name: "Galeazzi Fracture", url: "images/kemik15.png" },
+                { name: "Scaphoid Fracture", url: "images/kemik16.png" },
+                { name: "Bennett Fracture", url: "images/kemik17.png" },
+                { name: "Index Finger Phalanx Fracture", url: "images/kemik18.png" },
+                { name: "Distal Tibia Fracture", url: "images/kemik19.png" },
+                { name: "Distal Fibula Fracture", url: "images/kemik20.png" },
+                { name: "Calcaneus Fracture", url: "images/kemik21.png" },
+                { name: "Cervical Spine Fracture (C2)", url: "images/kemik22.png" },
+                { name: "Metacarpal Neck Fracture", url: "images/kemik23.png" },
+                { name: "Wrist Dislocation / Fracture", url: "images/kemik24.png" },
+                { name: "2nd Finger Phalanx Fracture", url: "images/kemik25.png" },
+                { name: "3rd Finger Phalanx Fracture", url: "images/kemik26.png" },
+                { name: "4th Finger Phalanx Fracture", url: "images/kemik27.png" },
+                { name: "5th Finger Phalanx Fracture", url: "images/kemik28.png" },
+                { name: "Thumb Proximal Fracture", url: "images/kemik29.png" },
+                { name: "Intraarticular Phalanx Fracture", url: "images/kemik30.png" },
+                { name: "2nd Finger Joint Fracture", url: "images/kemik31.png" },
+                { name: "3rd Finger Joint Fracture", url: "images/kemik32.png" },
+                { name: "4th Finger Joint Fracture", url: "images/kemik33.png" },
+                { name: "5th Finger Joint Fracture", url: "images/kemik34.png" },
+                { name: "Finger Tuft Fracture", url: "images/kemik35.png" },
+                { name: "Distal Interphalangeal Fracture", url: "images/kemik36.png" },
+                { name: "Proximal Interphalangeal Fracture", url: "images/kemik37.png" },
+                { name: "Finger Fracture-Dislocation", url: "images/kemik38.png" },
+                { name: "Phalanx Shaft Fracture", url: "images/kemik39.png" },
+                { name: "Finger Base Fracture", url: "images/kemik40.png" },
+                { name: "Little Finger Fracture", url: "images/kemik41.png" },
+                { name: "Distal Radius Fracture", url: "images/kemik42.png" },
+                { name: "Distal Ulna Fracture", url: "images/kemik43.png" },
+                { name: "Lower Forearm Fracture", url: "images/kemik44.png" },
+                { name: "Wrist Hairline Fracture", url: "images/kemik45.png" },
+                { name: "Distal Forearm Fracture", url: "images/kemik46.png" },
+                { name: "Linear Skull Fracture", url: "images/kemik47.png" },
+                { name: "Pelvic Ring Fracture", url: "images/kemik48.png" },
+                { name: "Acetabular Fracture", url: "images/kemik49.png" },
+                { name: "Carpal Bone Fracture", url: "images/kemik50.png" }
             ]
         };
 
         const xrayCases = {
-            tr: [
-                { name: "3D Diş Tomografisi", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }
-            ],
-            en: [
-                { name: "3D Dental Tomography", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }
-            ]
+            tr: [{ name: "3D Diş Tomografisi", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }],
+            en: [{ name: "3D Dental Tomography", url: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=80" }]
         };
 
         let currentLang = localStorage.getItem('mediIdleLang') || 'tr';
@@ -942,8 +1020,6 @@
             }
 
             const caseWon = localStorage.getItem('mediIdleRxWon') === 'true';
-            const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
-
             if (targetMode === 2 && !caseWon) {
                 alert(i18n[currentLang].alertLocked);
                 return;
@@ -963,8 +1039,6 @@
         function renderModesNavBars() {
             const caseWon = localStorage.getItem('mediIdleRxWon') === 'true';
             const boneWon = localStorage.getItem('mediIdleBoneWon') === 'true';
-            const xrayWon = localStorage.getItem('mediIdleXrayWon') === 'true';
-            // 3. mod deaktif olduğu için allCompleted hesabını şimdilik ilk iki moda bağlayabiliriz
             const allCompleted = caseWon && boneWon;
 
             const navBars = ['modesNavBar1', 'modesNavBar2', 'modesNavBar3'];
