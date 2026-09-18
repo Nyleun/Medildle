@@ -77,8 +77,6 @@
             transition: opacity 0.2s;
         }
         .action-header-btn:hover, .theme-toggle:hover, .lang-toggle:hover { opacity: 0.8; }
-        .reset-btn { border-color: #e74c3c; color: #e74c3c; }
-        .reset-btn:hover { background: rgba(231, 76, 60, 0.1); }
 
         .logo-container {
             width: 100%;
@@ -478,6 +476,18 @@
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
+
+        .disclaimer-footer {
+            width: 100%;
+            max-width: 700px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 11.5px;
+            color: var(--subtitle-color);
+            line-height: 1.4;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body data-theme="dark">
@@ -485,7 +495,6 @@
     <div class="header-container">
         <h1>🩺 MediIdle</h1>
         <div class="header-btns">
-            <button class="action-header-btn reset-btn" id="btnReset" onclick="resetGame()">🔄 Sıfırla</button>
             <button class="theme-toggle" id="btnTheme" onclick="toggleTheme()">☀️ Tema</button>
             <button class="lang-toggle" id="btnLang" onclick="toggleLanguage()">🇬🇧 EN</button>
         </div>
@@ -652,6 +661,11 @@
 
     </div>
 
+    <!-- Yasal / Tıbbi Sorumluluk Reddi ve Uyarı Alanı -->
+    <div class="disclaimer-footer" id="txtDisclaimer">
+        ⚠️ <strong>Uyarı:</strong> Bu platformdaki klinik vakalar, anatomik görseller ve tıbbi bilgiler tamamen simülasyon ve bulmaca amaçlıdır. Gerçek teşhis, tedavi veya klinik yönlendirme için asla kullanılmamalıdır. Hatalı veya eksik bilgi içerebilir; kesin tıbbi kararlar için uzman hekimlere ve güncel kılavuzlara başvurulmalıdır.
+    </div>
+
     <!-- İstatistik Penceresi -->
     <div class="modal-overlay" id="statsModal" onclick="closeStatsModalOnOutside(event)">
         <div class="modal-content">
@@ -681,7 +695,6 @@
     <script>
         const i18n = {
             tr: {
-                reset: "🔄 Sıfırla",
                 theme: "☀️ Tema",
                 sub: "Günün Klinik Vaka ve Anatomi Bulmacası",
                 anamnesisTitle: "Hasta Anamnezi & Öykü",
@@ -721,10 +734,10 @@
                 alertAlreadyRx: "Bu tedaviyi / tahmini zaten denedin!",
                 alertLocked: "Önceki modları tamamlamalısın!",
                 alertComingSoon: "Bu mod çok yakında açılacaktır!",
-                completionText: "🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz."
+                completionText: "🎉 Günün tüm bulmacalarını tamamladın! Günü bitirdin, sonraki günlerde görüşürüz.",
+                disclaimerText: "⚠️ <strong>Uyarı:</strong> Bu platformdaki klinik vakalar, anatomik görseller ve tıbbi bilgiler tamamen simülasyon ve bulmaca amaçlıdır. Gerçek teşhis, tedavi veya klinik yönlendirme için asla kullanılmamalıdır. Hatalı veya eksik bilgi içerebilir; kesin tıbbi kararlar için uzman hekimlere ve güncel kılavuzlara başvurulmalıdır."
             },
             en: {
-                reset: "🔄 Reset",
                 theme: "☀️ Theme",
                 sub: "Daily Clinical Case & Anatomy Puzzle",
                 anamnesisTitle: "Patient Anamnesis & History",
@@ -764,7 +777,8 @@
                 alertAlreadyRx: "You already tried this guess!",
                 alertLocked: "You must complete previous modes first!",
                 alertComingSoon: "This mode is coming soon!",
-                completionText: "🎉 You completed all today's puzzles! You've finished the day, see you in the coming days."
+                completionText: "🎉 You completed all today's puzzles! You've finished the day, see you in the coming days.",
+                disclaimerText: "⚠️ <strong>Disclaimer:</strong> Clinical cases, anatomical images, and medical information on this platform are for simulation and puzzle purposes only. They must never be used for real clinical diagnosis, treatment, or medical guidance. May contain inaccuracies; always consult medical professionals and current guidelines for critical decisions."
             }
         };
 
@@ -856,7 +870,6 @@
             }
         };
 
-        // El, ayak, femur ve diğer bölgelerin art arda gelmemesi için dengeli ve gruplandırılmış sıralama
         const boneCases = {
             tr: [
                 { name: "Femur (Uyluk Kemiği)", file: "kemik1.png" },
@@ -1101,6 +1114,17 @@
             localStorage.setItem('mediIdleRxGuesses', JSON.stringify(savedRx));
             rxGuessesHistory = savedRx;
 
+            // Kemik tahminlerinin dil çevrim senkronizasyonu
+            let savedBone = JSON.parse(localStorage.getItem('mediIdleBoneGuesses')) || [];
+            const oldBoneList = boneCases[currentLang === 'tr' ? 'en' : 'tr'];
+            const newBoneList = boneCases[currentLang];
+            savedBone = savedBone.map(b => {
+                const idx = oldBoneList.findIndex(item => item.name.toLowerCase() === b.toLowerCase());
+                return (idx !== -1 && newBoneList[idx]) ? newBoneList[idx].name : b;
+            });
+            localStorage.setItem('mediIdleBoneGuesses', JSON.stringify(savedBone));
+            boneGuessesHistory = savedBone;
+
             const processedBones = getProcessedBoneCases();
             const oldBoneIndex = getDailyIndex(processedBones.length);
             const oldXrayName = dailyXrayCase ? dailyXrayCase.name : "";
@@ -1170,8 +1194,7 @@
             rxGuessesHistory.forEach(rxG => { renderRxGuessItem(rxG, isCorrectRx(rxG), 'rxGuessesList'); });
 
             document.getElementById('boneGuessesList').innerHTML = '';
-            const savedBone = JSON.parse(localStorage.getItem('mediIdleBoneGuesses')) || [];
-            savedBone.forEach(b => { renderRxGuessItem(b, b.toLowerCase() === dailyBoneCase.name.toLowerCase(), 'boneGuessesList'); });
+            boneGuessesHistory.forEach(b => { renderRxGuessItem(b, b.toLowerCase() === dailyBoneCase.name.toLowerCase(), 'boneGuessesList'); });
 
             document.getElementById('xrayGuessesList').innerHTML = '';
             const savedXray = JSON.parse(localStorage.getItem('mediIdleXrayGuesses')) || [];
@@ -1180,7 +1203,6 @@
 
         function updateLanguageUI() {
             const t = i18n[currentLang];
-            document.getElementById('btnReset').innerText = t.reset;
             document.getElementById('btnTheme').innerText = t.theme;
             document.getElementById('btnLang').innerText = currentLang === 'tr' ? '🇬🇧 EN' : '🇹🇷 TR';
             document.getElementById('txtSub').innerText = t.sub;
@@ -1238,6 +1260,8 @@
             document.getElementById('txtWinsLabel').innerText = t.wins;
             document.getElementById('txtStreakLabel').innerText = t.streak;
             document.getElementById('txtModalBtn').innerText = t.modalBtn;
+
+            document.getElementById('txtDisclaimer').innerHTML = t.disclaimerText;
 
             document.getElementById('modalDiagnosis').innerText = dailyPatient.diagnosis.split(" (")[0];
             document.getElementById('modalBoneDiagnosis').innerText = dailyBoneCase.name.split(" (")[0];
@@ -1483,13 +1507,6 @@
         function toggleTheme() {
             const body = document.body;
             body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-
-        function resetGame() {
-            if (confirm(currentLang === 'tr' ? "Oyun ilerlemesini sıfırlamak istediğine emin misin?" : "Are you sure you want to reset game progress?")) {
-                localStorage.clear();
-                location.reload();
-            }
         }
 
         function openStatsModal() {
